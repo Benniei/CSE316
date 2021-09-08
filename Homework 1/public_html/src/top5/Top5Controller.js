@@ -59,6 +59,20 @@ export default class Top5Controller {
                 }
             }
         }
+
+        // // SETUP LIST HANDLERS
+        // let list_item = document.getElementById("top5-list-0");
+        // let list_index = 0;
+        // while(list_item != null){
+        //     item.ondblclick = (ev) => {
+        //         list_index++;
+                
+                
+
+
+        //         list_item = document.getElementById("top5-list-" + list_index);
+        //     }
+        // }
     }
 
     registerListSelectHandlers(id) {
@@ -80,6 +94,32 @@ export default class Top5Controller {
             deleteSpan.innerHTML = "";
             deleteSpan.appendChild(document.createTextNode(listName));
             modal.classList.add("is-visible");
+        }
+
+        let list_item = document.getElementById("top5-list-" + id)
+        list_item.ondblclick = (ev) => {
+            // CLEAR TEXT
+            list_item.innerHTML = "";
+
+            // ADD TEXT FIELD
+            let textInput = document.createElement("input");
+            textInput.setAttribute("type", "text");
+            textInput.setAttribute("id", "list-text-input-" + id);
+            textInput.setAttribute("value", this.model.getList(id).getName());
+            textInput.setAttribute("size", "12.5");
+            list_item.appendChild(textInput);
+
+            textInput.ondblclick = (event) => {
+                this.ignoreParentClick(event);
+            }
+            textInput.onkeydown = (event) => {
+                if (event.key === 'Enter') {
+                    this.model.addChangeListTransaction(id, event.target.value);
+                }
+            }
+            textInput.onblur = (event) => {
+                this.model.restoreList();
+            }
         }
     }
 
