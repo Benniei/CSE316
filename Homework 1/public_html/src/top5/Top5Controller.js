@@ -59,20 +59,6 @@ export default class Top5Controller {
                 }
             }
         }
-
-        // // SETUP LIST HANDLERS
-        // let list_item = document.getElementById("top5-list-0");
-        // let list_index = 0;
-        // while(list_item != null){
-        //     item.ondblclick = (ev) => {
-        //         list_index++;
-                
-                
-
-
-        //         list_item = document.getElementById("top5-list-" + list_index);
-        //     }
-        // }
     }
 
     registerListSelectHandlers(id) {
@@ -118,7 +104,7 @@ export default class Top5Controller {
                 }
             }
             textInput.onblur = (event) => {
-                this.model.restoreList();
+                this.model.restoreMainList(id);
             }
         }
     }

@@ -140,6 +140,10 @@ export default class Top5Model {
         this.view.update(this.currentList);
     }
 
+    restoreMainList(id){
+        this.view.updateList(id, this.top5Lists[id])
+    }
+
     addChangeItemTransaction = (id, newText) => {
         // GET THE CURRENT TEXT
         let oldText = this.currentList.items[id];
