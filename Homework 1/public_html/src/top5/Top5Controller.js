@@ -100,7 +100,7 @@ export default class Top5Controller {
             }
             textInput.onkeydown = (event) => {
                 if (event.key === 'Enter') {
-                    this.model.addChangeListTransaction(id, event.target.value);
+                    this.model.changeList(id, event.target.value);
                 }
             }
             textInput.onblur = (event) => {
