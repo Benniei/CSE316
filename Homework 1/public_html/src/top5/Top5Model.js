@@ -75,6 +75,7 @@ export default class Top5Model {
                 return 1;
             }
         });
+        console.log(this.top5Lists);
         this.view.refreshLists(this.top5Lists);
     }
 
@@ -141,7 +142,7 @@ export default class Top5Model {
     }
 
     restoreMainList(id){
-        this.view.updateList(id, this.top5Lists[id])
+        this.updateList(id, this.top5Lists[id])
     }
 
     addChangeItemTransaction = (id, newText) => {
