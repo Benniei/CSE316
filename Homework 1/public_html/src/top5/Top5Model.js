@@ -72,11 +72,17 @@ export default class Top5Model {
                 return 0;
             }
             else {
+                this.swapID(listA, listB);
                 return 1;
             }
         });
-        console.log(this.top5Lists);
         this.view.refreshLists(this.top5Lists);
+    }
+
+    swapID(listA, listB){
+        let tempID = listA.getID();
+        listA.setID(listB.getID());
+        listB.setID(tempID);
     }
 
     hasCurrentList() {

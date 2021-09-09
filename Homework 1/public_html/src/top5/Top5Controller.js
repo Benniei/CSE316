@@ -12,6 +12,7 @@ export default class Top5Controller {
     }
 
     setModel(initModel) {
+        // localStorage.clear();
         this.model = initModel;
         this.initHandlers();
     }

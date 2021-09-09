@@ -11,6 +11,14 @@ export default class Top5List {
         this.id = initId;
     }
 
+    getID(){
+        return this.id;
+    }
+
+    setID(id){
+        this.id = id;
+    }
+    
     getName() {
         return this.name;
     }
