@@ -64,11 +64,16 @@ export default class Top5Model {
     }
 
     removeList(id){
-        let index = getListIndex(id)
+        let index = this.getListIndex(id)
         if(index > -1) {
             this.top5Lists.splice(index, 1);
         }
+        this.view.refreshLists(this.top5Lists);
+        this.view.clearWorkspace();
+        this.saveLists();
         //remove the css styling
+        let style_item = document.getElementById("style-list-" + id);
+        style_item.remove();
     }
 
     sortLists() {
@@ -183,6 +188,13 @@ export default class Top5Model {
     undo() {
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
+            this.view.updateToolbarButtons(this);
+        }
+    }
+
+    redo(){
+        if(this.tps.hasTransactionToRedo()){
+            this.tps.doTransaction();
             this.view.updateToolbarButtons(this);
         }
     }
