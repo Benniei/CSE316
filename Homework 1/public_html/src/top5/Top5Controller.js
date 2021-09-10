@@ -63,6 +63,19 @@ export default class Top5Controller {
     }
 
     registerListSelectHandlers(id) {
+        let style_item = document.getElementById("style-list-" + id);
+        if(style_item == null){
+            let css = "#top5-list-" + id + ":hover{background:black; color:white;}";
+            var style = document.createElement("style");
+            style.setAttribute("id", "style-list-" + id);
+            if(style.styleSheet){
+                style.styleSheet.cssText = css;
+            }
+            else{
+                style.appendChild(document.createTextNode(css));
+            }
+            document.getElementsByTagName('head')[0].appendChild(style);
+        }
         // FOR SELECTING THE LIST
         document.getElementById("top5-list-" + id).onmousedown = (event) => {
             this.model.unselectAll();
