@@ -15,6 +15,7 @@ export default class Top5Controller {
         // localStorage.clear();
         this.model = initModel;
         this.initHandlers();
+        this.model.toolbarUpdate();
     }
 
     initHandlers() {
@@ -26,6 +27,13 @@ export default class Top5Controller {
         }
         document.getElementById("undo-button").onmousedown = (event) => {
             this.model.undo();
+        }
+        document.getElementById("redo-button").onmousedown = (event) => {
+            this.model.redo();
+        }
+        document.getElementById("close-button").onmousedown = (event) => {
+            this.model.unhighlightAllList();
+            //todo: clear status bar
         }
 
         // SETUP THE ITEM HANDLERS
@@ -82,6 +90,9 @@ export default class Top5Controller {
 
             // GET THE SELECTED LIST
             this.model.loadList(id);
+            this.model.toolbarUpdate();
+
+            //todo: update status bar
         }
         // FOR DELETING THE LIST
         document.getElementById("delete-list-" + id).onmousedown = (event) => {

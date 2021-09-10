@@ -8,6 +8,11 @@
  * @author ?
  */
 export default class Top5View {
+
+    constructor(){
+        this.highlightedList = false;
+    }
+
     // REFRESHES ALL THE LISTS IN THE LEFT SIDEBAR
     refreshLists(lists) {
         // GET THE UI CONTROL WE WILL APPEND IT TO
@@ -92,6 +97,7 @@ export default class Top5View {
         let listCard = document.getElementById("top5-list-" + listId);
         listCard.classList.remove("unselected-list-card");
         listCard.classList.add("selected-list-card");
+        this.highlightedList = true;
     }
 
     unhighlightList(listId) {
@@ -99,6 +105,7 @@ export default class Top5View {
         let listCard = document.getElementById("top5-list-" + listId);
         listCard.classList.add("unselected-list-card");
         listCard.classList.remove("selected-list-card");
+        this.highlightedList = false;
     }
 
     updateToolbarButtons(model) {
@@ -108,6 +115,18 @@ export default class Top5View {
         }
         else {
             this.enableButton("undo-button");
-        }   
+        }
+        if(!tps.hasTransactionToRedo()){
+            this.disableButton("redo-button");
+        }
+        else{
+            this.enableButton("redo-button");
+        }
+        if(!this.highlightedList){
+            this.disableButton("close-button");
+        }
+        else{
+            this.enableButton("close-button");
+        }
     }
 }

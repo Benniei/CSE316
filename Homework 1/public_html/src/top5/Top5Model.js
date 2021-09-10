@@ -121,6 +121,10 @@ export default class Top5Model {
         this.view.updateToolbarButtons(this);
     }
 
+    toolbarUpdate(){
+        this.view.updateToolbarButtons(this);
+    }
+
     loadLists() {
         // CHECK TO SEE IF THERE IS DATA IN LOCAL STORAGE FOR THIS APP
         let recentLists = localStorage.getItem("recent_work");
@@ -184,6 +188,19 @@ export default class Top5Model {
         item.innerHTML = "";
         item.appendChild(document.createTextNode(list.getName()));
     }
+
+    /**
+     * Unhighlists all the list
+     */
+    unhighlightAllList(){
+        for(let i = 0; i < this.top5Lists.length; i++){
+            let id = this.getList(i).getID();
+            this.view.unhighlightList(id);
+        }
+        this.view.clearWorkspace();
+        this.view.updateToolbarButtons(this);
+    }
+
     // SIMPLE UNDO/REDO FUNCTIONS
     undo() {
         if (this.tps.hasTransactionToUndo()) {
