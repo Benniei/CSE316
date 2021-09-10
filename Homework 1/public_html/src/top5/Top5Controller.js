@@ -43,7 +43,6 @@ export default class Top5Controller {
                     textInput.setAttribute("type", "text");
                     textInput.setAttribute("id", "item-text-input-" + i);
                     textInput.setAttribute("value", this.model.currentList.getItemAt(i-1));
-
                     item.appendChild(textInput);
 
                     textInput.ondblclick = (event) => {
@@ -63,6 +62,7 @@ export default class Top5Controller {
     }
 
     registerListSelectHandlers(id) {
+        // Adds CSS for Highlighting
         let style_item = document.getElementById("style-list-" + id);
         if(style_item == null){
             let css = "#top5-list-" + id + ":hover{background:black; color:white;}";
@@ -94,6 +94,12 @@ export default class Top5Controller {
             deleteSpan.innerHTML = "";
             deleteSpan.appendChild(document.createTextNode(listName));
             modal.classList.add("is-visible");
+            let confirmButton = document.getElementById("dialog-confirm-button");
+            let cancelButton = document.getElementById("dialog-cancel-button");
+            cancelButton.onmousedown = (event) => {
+                deleteSpan.innerHTML = "";
+                modal.classList.remove("is-visible");
+            }
         }
 
         let list_item = document.getElementById("top5-list-" + id)
@@ -105,7 +111,7 @@ export default class Top5Controller {
             let textInput = document.createElement("input");
             textInput.setAttribute("type", "text");
             textInput.setAttribute("id", "list-text-input-" + id);
-            textInput.setAttribute("value", this.model.getList(id).getName());
+            textInput.setAttribute("value", this.model.getList(this.model.getListIndex(id)).getName());
             textInput.setAttribute("size", "12.5");
             list_item.appendChild(textInput);
 

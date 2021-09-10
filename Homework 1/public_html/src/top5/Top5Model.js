@@ -63,6 +63,14 @@ export default class Top5Model {
         return newList;
     }
 
+    removeList(id){
+        let index = getListIndex(id)
+        if(index > -1) {
+            this.top5Lists.splice(index, 1);
+        }
+        //remove the css styling
+    }
+
     sortLists() {
         this.top5Lists.sort((listA, listB) => {
             if (listA.getName() < listB.getName()) {
@@ -72,17 +80,10 @@ export default class Top5Model {
                 return 0;
             }
             else {
-                this.swapID(listA, listB);
                 return 1;
             }
         });
         this.view.refreshLists(this.top5Lists);
-    }
-
-    swapID(listA, listB){
-        let tempID = listA.getID();
-        listA.setID(listB.getID());
-        listB.setID(tempID);
     }
 
     hasCurrentList() {
@@ -106,7 +107,7 @@ export default class Top5Model {
                 // THIS IS THE LIST TO LOAD
                 this.currentList = list;
                 this.view.update(this.currentList);
-                this.view.highlightList(i);
+                this.view.highlightList(id);
                 found = true;
             }
             i++;
@@ -165,7 +166,9 @@ export default class Top5Model {
     }
     
     changeList(id, text) {
-        this.top5Lists[id].setName(text);
+        let index = this.getListIndex(id);
+        if(index != -1)
+            this.top5Lists[index].setName(text);
         this.updateList(id, this.top5Lists[id]);
         this.saveLists();
         this.sortLists();
