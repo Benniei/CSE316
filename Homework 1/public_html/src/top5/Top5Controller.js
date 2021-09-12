@@ -34,6 +34,8 @@ export default class Top5Controller {
         document.getElementById("close-button").onmousedown = (event) => {
             this.model.unhighlightAllList();
             //todo: clear status bar
+            let statusbar = document.getElementById("top5-statusbar");
+            statusbar.innerHTML = "";
         }
 
         // SETUP THE ITEM HANDLERS
@@ -93,6 +95,11 @@ export default class Top5Controller {
             this.model.toolbarUpdate();
 
             //todo: update status bar
+            let message = "Top 5 " + this.model.getList(this.model.getListIndex(id)).getName()
+            let statusbar = document.getElementById("top5-statusbar");
+            statusbar.innerHTML = "";
+            statusbar.appendChild(document.createTextNode(message));
+            
         }
         // FOR DELETING THE LIST
         document.getElementById("delete-list-" + id).onmousedown = (event) => {

@@ -69,6 +69,11 @@ body {
   top: 90%;
   width: 100%;
   height: 10%;
+  background-color: #ffa07a;
+  font-size: 35pt;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 76.4px;     
 }
 
 #sidebar-heading {
