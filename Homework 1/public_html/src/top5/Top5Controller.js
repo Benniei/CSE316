@@ -33,7 +33,7 @@ export default class Top5Controller {
         }
         document.getElementById("close-button").onmousedown = (event) => {
             this.model.unhighlightAllList();
-            //todo: clear status bar
+            //clear status bar
             let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";
         }
@@ -94,7 +94,7 @@ export default class Top5Controller {
             this.model.loadList(id);
             this.model.toolbarUpdate();
 
-            //todo: update status bar
+            //update status bar
             let message = "Top 5 " + this.model.getList(this.model.getListIndex(id)).getName()
             let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";

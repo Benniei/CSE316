@@ -98,7 +98,7 @@ export default class Top5Model {
     unselectAll() {
         for (let i = 0; i < this.top5Lists.length; i++) {
             let list = this.top5Lists[i];
-            this.view.unhighlightList(i);
+            this.view.unhighlightList(list.getID);
         }
     }
 
@@ -193,10 +193,7 @@ export default class Top5Model {
      * Unhighlists all the list
      */
     unhighlightAllList(){
-        for(let i = 0; i < this.top5Lists.length; i++){
-            let id = this.getList(i).getID();
-            this.view.unhighlightList(id);
-        }
+        this.unselectAll();
         this.view.clearWorkspace();
         this.view.updateToolbarButtons(this);
     }
