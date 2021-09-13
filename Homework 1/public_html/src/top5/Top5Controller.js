@@ -46,6 +46,7 @@ export default class Top5Controller {
             item.ondblclick = (ev) => {
                 if (this.model.hasCurrentList()) {
                     // CLEAR THE TEXT
+                    item.setAttribute("draggable", false);
                     item.innerHTML = "";
 
                     // ADD A TEXT FIELD
@@ -61,10 +62,12 @@ export default class Top5Controller {
                     textInput.onkeydown = (event) => {
                         if (event.key === 'Enter') {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
+                            item.setAttribute("draggable", true);
                         }
                     }
                     textInput.onblur = (event) => {
                         this.model.restoreList();
+                        item.setAttribute("draggable", true);
                     }
                 }
             }
