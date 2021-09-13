@@ -72,8 +72,12 @@ body {
   background-color: #ffa07a;
   font-size: 35pt;
   text-align: center;
-  vertical-align: middle;
-  line-height: 76.4px;     
+  vertical-align: middle;  
+}
+
+#top5-statusbar-text{
+  position: relative;
+  top: 20%;
 }
 
 #sidebar-heading {

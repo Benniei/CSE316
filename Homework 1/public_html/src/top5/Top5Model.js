@@ -1,7 +1,7 @@
 import jsTPS from "../common/jsTPS.js"
 import Top5List from "./Top5List.js";
 import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
-
+import MoveItem_Tranaction from "./transactions/MoveItem_Transaction.js"
 
 /**
  * Top5Model.js
@@ -97,8 +97,7 @@ export default class Top5Model {
 
     unselectAll() {
         for (let i = 0; i < this.top5Lists.length; i++) {
-            let list = this.top5Lists[i];
-            this.view.unhighlightList(list.getID);
+            this.view.unhighlightList(i);
         }
     }
 
@@ -158,7 +157,7 @@ export default class Top5Model {
     }
 
     restoreMainList(id){
-        this.updateList(id, this.top5Lists[id])
+        this.updateList(id, this.top5Lists[id]);
     }
 
     addChangeItemTransaction = (id, newText) => {
@@ -170,6 +169,14 @@ export default class Top5Model {
 
     changeItem(id, text) {
         this.currentList.items[id] = text;
+        this.view.update(this.currentList);
+        this.saveLists();
+    }
+
+    moveItem(oldItemIndex, newItemIndex){
+        // Change list
+        console.log(currentList);
+        this.getList(oldItemIndex).moveItem(oldItemIndex, newItemIndex);
         this.view.update(this.currentList);
         this.saveLists();
     }
