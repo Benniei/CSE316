@@ -68,7 +68,33 @@ export default class Top5Controller {
                     }
                 }
             }
+
+            //TODO: init dragging for each element
+            item.setAttribute("draggable", true);
+            item.ondragstart = (ev) => {
+                ev.dataTransfer.setData("Text", ev.target.id);
+            }
+            item.ondragover = (ev) =>{
+                ev.preventDefault();
+            }
+            item.ondrop = (ev) => {
+                ev.preventDefault();
+                let data = ev.dataTransfer.getData("text");
+                this.exchangeElement(item, document.getElementById(data));
+                this.model.moveItem(i, data.charAt(data.length - 1));
+            }
         }
+    }
+
+    exchangeElement(a, b){
+        let aHolder = a.innerHTML.slice();
+        let bHolder = b.innerHTML.slice();
+
+        a.innerHTML = "";
+        a.appendChild(document.createTextNode(bHolder));
+        
+        b.innerHTML = "";
+        b.appendChild(document.createTextNode(aHolder));
     }
 
     registerListSelectHandlers(id) {
