@@ -34,14 +34,14 @@ export default class Top5Controller {
         document.getElementById("close-button").onmousedown = (event) => {
             this.model.unhighlightAllList();
             //clear status bar
-            let statusbar = document.getElementById("top5-statusbar-text");
+            let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";
         }
 
         // SETUP THE ITEM HANDLERS
         for (let i = 1; i <= 5; i++) {
             let item = document.getElementById("item-" + i);
-            
+
             // AND FOR TEXT EDITING
             item.ondblclick = (ev) => {
                 if (this.model.hasCurrentList()) {
@@ -51,7 +51,7 @@ export default class Top5Controller {
                     // ADD A TEXT FIELD
                     let textInput = document.createElement("input");
                     textInput.setAttribute("type", "text");
-                    textInput.setAttribute("id", "item-text-input-" + this.model.currentList[i].getID());
+                    textInput.setAttribute("id", "item-text-input-" + i);
                     textInput.setAttribute("value", this.model.currentList.getItemAt(i-1));
                     item.appendChild(textInput);
 
@@ -68,33 +68,7 @@ export default class Top5Controller {
                     }
                 }
             }
-
-            //TODO: init dragging for each element
-            item.setAttribute("draggable", true);
-            item.ondragstart = (ev) => {
-                ev.dataTransfer.setData("Text", ev.target.id);
-            }
-            item.ondragover = (ev) =>{
-                ev.preventDefault();
-            }
-            item.ondrop = (ev) => {
-                ev.preventDefault();
-                let data = ev.dataTransfer.getData("text");
-                this.exchangeElement(item, document.getElementById(data));
-                this.model.moveItem(i, data.charAt(data.length - 1));
-            }
         }
-    }
-
-    exchangeElement(a, b){
-        let aHolder = a.innerHTML.slice();
-        let bHolder = b.innerHTML.slice();
-
-        a.innerHTML = "";
-        a.appendChild(document.createTextNode(bHolder));
-        
-        b.innerHTML = "";
-        b.appendChild(document.createTextNode(aHolder));
     }
 
     registerListSelectHandlers(id) {
@@ -122,7 +96,7 @@ export default class Top5Controller {
 
             //update status bar
             let message = "Top 5 " + this.model.getList(this.model.getListIndex(id)).getName()
-            let statusbar = document.getElementById("top5-statusbar-text");
+            let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";
             statusbar.appendChild(document.createTextNode(message));
             
