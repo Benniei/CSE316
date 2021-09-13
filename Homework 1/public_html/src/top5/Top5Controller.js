@@ -70,7 +70,6 @@ export default class Top5Controller {
             }
 
             //TODO: init dragging for each element
-            item.setAttribute("draggable", true);
             item.ondragstart = (ev) => {
                 ev.dataTransfer.setData("Text", ev.target.id);
             }
@@ -81,7 +80,7 @@ export default class Top5Controller {
                 ev.preventDefault();
                 let data = ev.dataTransfer.getData("text");
                 this.exchangeElement(item, document.getElementById(data));
-                this.model.moveItem(i, data.charAt(data.length - 1));
+                this.model.moveListItem(i-1, parseInt(data.charAt(data.length - 1)) - 1);
             }
         }
     }
@@ -118,14 +117,12 @@ export default class Top5Controller {
 
             // GET THE SELECTED LIST
             this.model.loadList(id);
-            this.model.toolbarUpdate();
 
             //update status bar
             let message = "Top 5 " + this.model.getList(this.model.getListIndex(id)).getName()
             let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";
             statusbar.appendChild(document.createTextNode(message));
-            
         }
         // FOR DELETING THE LIST
         document.getElementById("delete-list-" + id).onmousedown = (event) => {

@@ -173,10 +173,18 @@ export default class Top5Model {
         this.saveLists();
     }
 
-    moveItem(oldItemIndex, newItemIndex){
+    moveListItem(oldItemIndex, newItemIndex){
         // Change list
-        this.getList(oldItemIndex).moveItem(oldItemIndex, newItemIndex);
+        this.swapListItems(this.currentList.items, oldItemIndex, newItemIndex);
         this.saveLists();
+    }
+
+    swapListItems(list, a, b){
+        let first = list[a];
+        let second = list[b];
+        
+        list[b] = first;
+        list[a] = second;
     }
 
     
