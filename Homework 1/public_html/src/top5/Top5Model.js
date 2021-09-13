@@ -167,24 +167,30 @@ export default class Top5Model {
         this.tps.addTransaction(transaction);
     }
 
+    addMoveItemTransaction = (oldIndex, newIndex) => {
+        let transaction = new MoveItem_Tranaction(this, oldIndex, newIndex);
+        this.tps.addTransaction(transaction);
+    }
+
     changeItem(id, text) {
         this.currentList.items[id] = text;
         this.view.update(this.currentList);
         this.saveLists();
     }
 
-    moveListItem(oldItemIndex, newItemIndex){
+    moveItem(oldItemIndex, newItemIndex){
         // Change list
-        this.swapListItems(this.currentList.items, oldItemIndex, newItemIndex);
+        this.swapListItems(oldItemIndex, newItemIndex);
+        this.view.update(this.currentList);
         this.saveLists();
     }
 
-    swapListItems(list, a, b){
-        let first = list[a];
-        let second = list[b];
+    swapListItems(a, b){
+        let first = this.currentList.items[a];
+        let second = this.currentList.items[b];
         
-        list[b] = first;
-        list[a] = second;
+        this.currentList.items[b] = first;
+        this.currentList.items[a] = second;
     }
 
     

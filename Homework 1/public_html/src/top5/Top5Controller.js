@@ -79,8 +79,9 @@ export default class Top5Controller {
             item.ondrop = (ev) => {
                 ev.preventDefault();
                 let data = ev.dataTransfer.getData("text");
-                this.exchangeElement(item, document.getElementById(data));
-                this.model.moveListItem(i-1, parseInt(data.charAt(data.length - 1)) - 1);
+                let a = i-1;
+                let b = parseInt(data.charAt(data.length - 1)) - 1;
+                this.model.addMoveItemTransaction(a, b);
             }
         }
     }
