@@ -129,4 +129,18 @@ export default class Top5View {
             this.enableButton("close-button");
         }
     }
+
+    startEditing(){
+        this.disableButton("add-list-button");
+        this.disableButton("undo-button");
+        this.disableButton("redo-button");
+        this.disableButton("close-button");
+    }
+
+    endEditing(){
+        this.enableButton("add-list-button");
+        this.enableButton("undo-button");
+        this.enableButton("redo-button");
+        this.enableButton("close-button");
+    }
 }

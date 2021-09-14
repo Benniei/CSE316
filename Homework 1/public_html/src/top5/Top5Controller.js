@@ -45,6 +45,7 @@ export default class Top5Controller {
             // AND FOR TEXT EDITING
             item.ondblclick = (ev) => {
                 if (this.model.hasCurrentList()) {
+                    this.model.startEditing();
                     // CLEAR THE TEXT
                     item.setAttribute("draggable", false);
                     item.innerHTML = "";
@@ -63,11 +64,13 @@ export default class Top5Controller {
                         if (event.key === 'Enter') {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
                             item.setAttribute("draggable", true);
+                            this.model.endEditing();
                         }
                     }
                     textInput.onblur = (event) => {
                         this.model.restoreList();
                         item.setAttribute("draggable", true);
+                        this.model.endEditing();
                     }
                 }
             }
@@ -153,6 +156,7 @@ export default class Top5Controller {
 
         let list_item = document.getElementById("top5-list-" + id)
         list_item.ondblclick = (ev) => {
+            this.model.startEditing();
             // CLEAR TEXT
             list_item.innerHTML = "";
 
@@ -170,10 +174,12 @@ export default class Top5Controller {
             textInput.onkeydown = (event) => {
                 if (event.key === 'Enter') {
                     this.model.changeList(id, event.target.value);
+                    this.model.endEditing();
                 }
             }
             textInput.onblur = (event) => {
                 this.model.restoreMainList(id);
+                this.model.endEditing();
             }
         }
     }
