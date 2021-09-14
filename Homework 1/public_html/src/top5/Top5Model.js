@@ -78,10 +78,10 @@ export default class Top5Model {
 
     sortLists() {
         this.top5Lists.sort((listA, listB) => {
-            if (listA.getName() < listB.getName()) {
+            if (listA.getName().toLowerCase() < listB.getName().toLowerCase()) {
                 return -1;
             }
-            else if (listA.getName === listB.getName()) {
+            else if (listA.getName().toLowerCase() === listB.getName().toLowerCase()) {
                 return 0;
             }
             else {
@@ -97,7 +97,7 @@ export default class Top5Model {
 
     unselectAll() {
         for (let i = 0; i < this.top5Lists.length; i++) {
-            this.view.unhighlightList(i);
+            this.view.unhighlightList(this.top5Lists[i].getID());
         }
     }
 
@@ -199,15 +199,17 @@ export default class Top5Model {
         if(index != -1)
             this.top5Lists[index].setName(text);
         this.updateList(id, this.top5Lists[id]);
-        this.saveLists();
         this.sortLists();
+        this.saveLists();
     }
 
     updateList(id, list){
         let item = document.getElementById("top5-list-" + id);
         item.innerHTML = "";
         item.appendChild(document.createTextNode(list.getName()));
+        this.saveLists();
     }
+
 
     /**
      * Unhighlists all the list
@@ -231,5 +233,32 @@ export default class Top5Model {
             this.tps.doTransaction();
             this.view.updateToolbarButtons(this);
         }
+    }
+
+    // Button Management
+    startEditing(){
+        this.view.disableButton("add-list-button");
+        this.view.updateToolbarButtons(this);
+        this.view.disableButton("close-button");
+    }
+
+    endEditing(){
+        this.view.enableButton("add-list-button");
+        this.view.updateToolbarButtons(this);
+        this.view.disableButton("close-button");
+    }
+
+    closeList(){
+        this.view.disableButton("undo-button");
+        this.view.disableButton("redo-button");
+        this.view.disableButton("close-button");
+    }
+
+    updateStatus(id){
+        //update status bar
+        let message = "Top 5 " + this.getList(this.getListIndex(id)).getName();
+        let statusbar = document.getElementById("top5-statusbar");
+        statusbar.innerHTML = "";
+        statusbar.appendChild(document.createTextNode(message));
     }
 }

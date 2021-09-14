@@ -33,6 +33,7 @@ export default class Top5Controller {
         }
         document.getElementById("close-button").onmousedown = (event) => {
             this.model.unhighlightAllList();
+            this.model.closeList();
             //clear status bar
             let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";
@@ -54,20 +55,26 @@ export default class Top5Controller {
                     let textInput = document.createElement("input");
                     textInput.setAttribute("type", "text");
                     textInput.setAttribute("id", "item-text-input-" + i);
-                    textInput.setAttribute("value", this.model.currentList.getItemAt(i-1));
+                    // textInput.setAttribute("value", this.model.currentList.getItemAt(i-1));
                     item.appendChild(textInput);
+
+                    textInput.focus();
+                    textInput.value = this.model.currentList.getItemAt(i-1);
 
                     textInput.ondblclick = (event) => {
                         this.ignoreParentClick(event);
                     }
                     textInput.onkeydown = (event) => {
                         if (event.key === 'Enter') {
-                            this.model.addChangeItemTransaction(i-1, event.target.value);
+                            if(this.model.currentList.items[i-1] !== event.target.value)
+                                this.model.addChangeItemTransaction(i-1, event.target.value);
                             item.setAttribute("draggable", true);
                             this.model.endEditing();
                         }
                     }
                     textInput.onblur = (event) => {
+                        if(this.model.currentList.items[i-1] !== event.target.value)
+                            this.model.addChangeItemTransaction(i-1, event.target.value);
                         this.model.restoreList();
                         item.setAttribute("draggable", true);
                         this.model.endEditing();
@@ -125,11 +132,7 @@ export default class Top5Controller {
             // GET THE SELECTED LIST
             this.model.loadList(id);
 
-            //update status bar
-            let message = "Top 5 " + this.model.getList(this.model.getListIndex(id)).getName()
-            let statusbar = document.getElementById("top5-statusbar");
-            statusbar.innerHTML = "";
-            statusbar.appendChild(document.createTextNode(message));
+            this.model.updateStatus(id);
         }
         // FOR DELETING THE LIST
         document.getElementById("delete-list-" + id).onmousedown = (event) => {
@@ -164,9 +167,11 @@ export default class Top5Controller {
             let textInput = document.createElement("input");
             textInput.setAttribute("type", "text");
             textInput.setAttribute("id", "list-text-input-" + id);
-            textInput.setAttribute("value", this.model.getList(this.model.getListIndex(id)).getName());
             textInput.setAttribute("size", "12.5");
             list_item.appendChild(textInput);
+
+            textInput.focus();
+            textInput.value = this.model.getList(this.model.getListIndex(id)).getName();
 
             textInput.ondblclick = (event) => {
                 this.ignoreParentClick(event);
@@ -175,11 +180,14 @@ export default class Top5Controller {
                 if (event.key === 'Enter') {
                     this.model.changeList(id, event.target.value);
                     this.model.endEditing();
+                    this.model.updateStatus(id);
                 }
             }
             textInput.onblur = (event) => {
-                this.model.restoreMainList(id);
+                this.model.changeList(id, event.target.value);
                 this.model.endEditing();
+                this.model.loadList(id);
+                this.model.updateStatus(id);
             }
         }
     }

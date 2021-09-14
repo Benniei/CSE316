@@ -85,11 +85,13 @@ export default class Top5View {
     disableButton(id) {
         let button = document.getElementById(id);
         button.classList.add("disabled");
+        button.disabled = true;
     }
 
     enableButton(id) {
         let button = document.getElementById(id);
         button.classList.remove("disabled");
+        button.disabled = false;
     }
 
     highlightList(listId) {
@@ -128,19 +130,5 @@ export default class Top5View {
         else{
             this.enableButton("close-button");
         }
-    }
-
-    startEditing(){
-        this.disableButton("add-list-button");
-        this.disableButton("undo-button");
-        this.disableButton("redo-button");
-        this.disableButton("close-button");
-    }
-
-    endEditing(){
-        this.enableButton("add-list-button");
-        this.enableButton("undo-button");
-        this.enableButton("redo-button");
-        this.enableButton("close-button");
     }
 }
