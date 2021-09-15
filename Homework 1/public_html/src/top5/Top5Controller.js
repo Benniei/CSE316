@@ -24,6 +24,7 @@ export default class Top5Controller {
             let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);            
             this.model.loadList(newList.id);
             this.model.saveLists();
+            this.model.startListEditing();
         }
         document.getElementById("undo-button").onmousedown = (event) => {
             this.model.undo();
@@ -97,6 +98,7 @@ export default class Top5Controller {
                 let a = i-1;
                 let b = parseInt(data.charAt(data.length - 1)) - 1;
                 this.model.addMoveItemTransaction(a, b);
+                this.model.toolbarUpdate();
             }
         }
     }

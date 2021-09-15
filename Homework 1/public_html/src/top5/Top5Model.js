@@ -198,7 +198,7 @@ export default class Top5Model {
         let index = this.getListIndex(id);
         if(index != -1)
             this.top5Lists[index].setName(text);
-        this.updateList(id, this.top5Lists[id]);
+        this.updateList(id, this.top5Lists[this.getListIndex(id)]);
         this.sortLists();
         this.saveLists();
     }
