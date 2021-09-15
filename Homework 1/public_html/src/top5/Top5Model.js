@@ -237,21 +237,26 @@ export default class Top5Model {
 
     // Button Management
     startEditing(){
-        this.view.disableButton("add-list-button");
         this.view.updateToolbarButtons(this);
         this.view.disableButton("close-button");
     }
 
     endEditing(){
-        this.view.enableButton("add-list-button");
         this.view.updateToolbarButtons(this);
-        this.view.disableButton("close-button");
     }
 
     closeList(){
         this.view.disableButton("undo-button");
         this.view.disableButton("redo-button");
         this.view.disableButton("close-button");
+    }
+
+    startListEditing(){
+        this.view.disableButton("add-list-button");
+    }
+
+    endListEditing(){
+        this.view.enableButton("add-list-button");
     }
 
     updateStatus(id){

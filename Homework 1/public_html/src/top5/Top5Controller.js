@@ -37,6 +37,7 @@ export default class Top5Controller {
             //clear status bar
             let statusbar = document.getElementById("top5-statusbar");
             statusbar.innerHTML = "";
+            this.model.endListEditing();
         }
 
         // SETUP THE ITEM HANDLERS
@@ -68,6 +69,7 @@ export default class Top5Controller {
                         if (event.key === 'Enter') {
                             if(this.model.currentList.items[i-1] !== event.target.value)
                                 this.model.addChangeItemTransaction(i-1, event.target.value);
+                            this.model.restoreList();
                             item.setAttribute("draggable", true);
                             this.model.endEditing();
                         }
@@ -128,7 +130,7 @@ export default class Top5Controller {
         // FOR SELECTING THE LIST
         document.getElementById("top5-list-" + id).onmousedown = (event) => {
             this.model.unselectAll();
-
+            this.model.startListEditing();
             // GET THE SELECTED LIST
             this.model.loadList(id);
 
@@ -152,6 +154,11 @@ export default class Top5Controller {
                 modal.classList.remove("is-visible");
             }
             confirmButton.onmousedown = (event) => {
+                let a = document.getElementById("top5-list-"+id);
+                if(a !== null && a.classList.contains("selected-list-card")){
+                    this.model.closeList();
+                    this.model.endListEditing();
+                }
                 this.model.removeList(id);
                 modal.classList.remove("is-visible");
             }
