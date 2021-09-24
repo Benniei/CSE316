@@ -24,6 +24,21 @@ export default class ItemCard extends React.Component {
         });
     }
 
+    handleKeyPress = (event) => {
+        if(event.code === "Enter") {
+            this.handleBlur();
+        }
+    }
+
+    handleBlur = (event) => {
+        //TODO: Save list
+        this.handleToggleEdit();
+    }
+
+    handleUpdate = (event) => {
+        this.setState({ itemName: event.target.value});
+    }
+
     render() {
         const{
             itemName, 
@@ -31,8 +46,19 @@ export default class ItemCard extends React.Component {
         } = this.props;
         if(this.state.editActive){
             return(
-                <input
-                />
+                <div
+                    id={"item-" + itemIndex}
+                    className={"top5-item"}
+                >
+                    <input
+                        id={"item-input-text-" + itemIndex}
+                        type='text'
+                        onBlur={this.handleBlur}
+                        onChange={this.handleUpdate}
+                        defaultValue={itemName}
+                        autoFocus
+                    />
+                </div>
             )
         }
         else{
@@ -40,6 +66,7 @@ export default class ItemCard extends React.Component {
                 <div
                     id={"item-" + itemIndex}
                     className={"top5-item"}
+                    onClick={this.handleClick}
                 >
                 {itemName}
                 </div>
