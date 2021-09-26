@@ -44,16 +44,16 @@ export default class ItemCard extends React.Component {
     render() {
         const{
             itemName, 
-            key
+            index
         } = this.props;
         if(this.state.editActive){
             return(
                 <div
-                    id={"item-" + key}
+                    id={"item-" + (index + 1)}
                     className={"top5-item"}
                 >
                     <input
-                        id={"item-input-text-" + key}
+                        id={"item-input-text-" + (index + 1)}
                         type='text'
                         onBlur={this.handleBlur}
                         onKeyPress={this.handleKeyPress}
@@ -67,7 +67,7 @@ export default class ItemCard extends React.Component {
         else{
             return (
                 <div
-                    id={"item-" + key}
+                    id={"item-" + (index + 1)}
                     className={"top5-item"}
                     onClick={this.handleClick}
                 >
