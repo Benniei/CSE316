@@ -28,6 +28,11 @@ class App extends React.Component {
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
+        // Flags for Edit Buttons
+        this.undoFlag = false;
+        this.redoFlag = false;
+        this.closeFlag = false;
+
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
@@ -77,6 +82,8 @@ class App extends React.Component {
             // IS AN AFTER EFFECT
             this.db.mutationCreateList(newList);
         });
+        this.updateToolbarbuttons();
+        this.activateClose();
     }
     renameList = (key, newName) => {
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
@@ -110,6 +117,7 @@ class App extends React.Component {
             this.db.mutationUpdateList(list);
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
+        this.updateToolbarbuttons();
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
@@ -120,6 +128,8 @@ class App extends React.Component {
         }), () => {
             // ANY AFTER EFFECTS?
         });
+        this.updateToolbarbuttons();
+        this.activateClose();
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
@@ -130,6 +140,8 @@ class App extends React.Component {
         }), () => {
             // ANY AFTER EFFECTS?
         });
+        this.updateToolbarbuttons();
+        this.deactivateClose();
     }
     deleteList = (keyNamePair) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
@@ -168,6 +180,7 @@ class App extends React.Component {
         }
         newKeyNamePairs.splice(index, 1);
         this.sortKeyNamePairsByName(newKeyNamePairs);
+        // Deleting a different List
         if(this.state.currentList !== null && this.state.currentList.key !== key){
             this.setState(prevState => ({
                 currentList: prevState.currentList,
@@ -181,6 +194,7 @@ class App extends React.Component {
                 this.db.mutationUpdateSessionData(this.state.sessionData);
             });
         }
+        // Deleting Current List
         else{
             this.setState(prevState => ({
                 currentList: null,
@@ -193,8 +207,10 @@ class App extends React.Component {
                 // ANY AFTER EFFECTS?
                 this.db.mutationUpdateSessionData(this.state.sessionData);
             });
+            this.deactivateClose();
         }
         this.hideDeleteListModal();
+        this.updateToolbarbuttons();
     }
     /*
     ------------------ITEMS-----------------------
@@ -217,18 +233,46 @@ class App extends React.Component {
             this.db.mutationUpdateList(this.state.currentList);
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
+        this.updateToolbarbuttons();
     }
     // Used to change the name of an Item 
     changeItem = (key, text) => {
         let currentList = this.state.currentList;
         currentList.items[key] = text;
     }
+    updateToolbarbuttons(){
+        if (!this.tps.hasTransactionToUndo()) {
+            this.undoFlag = false;
+        }
+        else {
+            this.undoFlag = true;
+        }
+        if(!this.tps.hasTransactionToRedo()){
+            this.redoFlag = false;
+        }
+        else{
+            this.redoFlag = true;
+        }
+    }
+
+    activateClose(){
+        this.closeFlag = true;
+    }
+
+    deactivateClose(){
+        this.closeFlag = false;
+    }
+
     render() {
         return (
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeCallback={this.closeCurrentList} 
+                    undo={this.undoFlag}
+                    redo={this.redoFlag}
+                    close={this.closeFlag}
+                />
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}
