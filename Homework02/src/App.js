@@ -9,12 +9,12 @@ import DeleteModal from './components/DeleteModal';
 import Banner from './components/Banner.js'
 import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
-import Statusbar from './components/Statusbar.js'
+import Statusbar from './components/Statusbar.js';
 
 // Undo and Redo Operations
-// import jsTPS from "./common/jsTPS.js"
-// import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
-// import MoveItem_Tranaction from "./transactions/MoveItem_Transaction.js"
+import jsTPS from "./common/jsTPS.js";
+import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js";
+// import MoveItem_Tranaction from "./transactions/MoveItem_Transaction.js";
 
 class App extends React.Component {
     constructor(props) {
@@ -22,6 +22,9 @@ class App extends React.Component {
 
         // THIS WILL TALK TO LOCAL STORAGE
         this.db = new DBManager();
+
+        // Transaction Manager
+        this.tps = new jsTPS();
 
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
@@ -150,10 +153,11 @@ class App extends React.Component {
     /*
     -----------------------------------------
     */
-    renameItem = (key, text) => {
-        let currentList = this.state.currentList;
-        currentList.items[key] = text;
-        console.log(currentList.items);
+    renameItem = (key, newText) => {
+        // addChangeItemTransaction
+        let oldText = this.state.currentList.items[key];
+        let transaction = new ChangeItem_Transaction(this, key, oldText, newText);
+        this.tps.addTransaction(transaction);
         this.setState(prevState => ({
             currentList: prevState.currentList,
             sessionData: {
@@ -164,11 +168,15 @@ class App extends React.Component {
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
-            this.db.mutationUpdateList(currentList);
+            this.db.mutationUpdateList(this.state.currentList);
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
-    
+    // Used to change the name of an Item 
+    changeItem = (key, text) => {
+        let currentList = this.state.currentList;
+        currentList.items[key] = text;
+    }
     render() {
         return (
             <div id="app-root">

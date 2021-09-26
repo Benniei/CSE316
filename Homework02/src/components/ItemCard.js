@@ -25,7 +25,7 @@ export default class ItemCard extends React.Component {
 
     handleKeyPress = (event) => {
         if(event.code === "Enter") {
-            this.handleBlur();
+            this.handleBlur(event);
         }
     }
 
@@ -56,6 +56,7 @@ export default class ItemCard extends React.Component {
                         id={"item-input-text-" + key}
                         type='text'
                         onBlur={this.handleBlur}
+                        onKeyPress={this.handleKeyPress}
                         onChange={this.handleUpdate}
                         defaultValue={itemName}
                         autoFocus
