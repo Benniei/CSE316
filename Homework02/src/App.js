@@ -11,6 +11,11 @@ import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js'
 
+// Undo and Redo Operations
+// import jsTPS from "./common/jsTPS.js"
+// import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
+// import MoveItem_Tranaction from "./transactions/MoveItem_Transaction.js"
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -142,6 +147,28 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+    /*
+    -----------------------------------------
+    */
+    renameItem = (key, text) => {
+        let currentList = this.state.currentList;
+        currentList.items[key] = text;
+        console.log(currentList.items);
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs
+            }
+        }), () => {
+            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+            // THE TRANSACTION STACK IS CLEARED
+            this.db.mutationUpdateList(currentList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        });
+    }
+    
     render() {
         return (
             <div id="app-root">
@@ -158,7 +185,9 @@ class App extends React.Component {
                     renameListCallback={this.renameList}
                 />
                 <Workspace
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    renameItemCallBack={this.renameItem}
+                />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal

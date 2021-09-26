@@ -7,7 +7,6 @@ export default class ItemCard extends React.Component {
         
         this.state = {
             itemName: this.props.name,
-            itemIndex: this.props.index + 1,
             editActive: false
         }
     }
@@ -32,6 +31,9 @@ export default class ItemCard extends React.Component {
 
     handleBlur = (event) => {
         //TODO: Save list
+        let itemIndex = this.props.index;
+        let text = event.target.value;
+        this.props.renameItemCallBack(itemIndex, text);
         this.handleToggleEdit();
     }
 
@@ -42,16 +44,16 @@ export default class ItemCard extends React.Component {
     render() {
         const{
             itemName, 
-            itemIndex
+            key
         } = this.props;
         if(this.state.editActive){
             return(
                 <div
-                    id={"item-" + itemIndex}
+                    id={"item-" + key}
                     className={"top5-item"}
                 >
                     <input
-                        id={"item-input-text-" + itemIndex}
+                        id={"item-input-text-" + key}
                         type='text'
                         onBlur={this.handleBlur}
                         onChange={this.handleUpdate}
@@ -64,7 +66,7 @@ export default class ItemCard extends React.Component {
         else{
             return (
                 <div
-                    id={"item-" + itemIndex}
+                    id={"item-" + key}
                     className={"top5-item"}
                     onClick={this.handleClick}
                 >
