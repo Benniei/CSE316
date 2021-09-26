@@ -33,18 +33,57 @@ class App extends React.Component {
         this.redoFlag = false;
         this.closeFlag = false;
 
+        // undo/redo binding
+        this.keyManager = this.keyManager.bind(this);
+
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
             sessionData : loadedSessionData
         }
     }
+
+    componentDidMount(){
+        document.addEventListener("keydown", this.keyManager, false);
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener("keydown", this.keyManager, false);
+    }
+
+    keyManager(e){
+        let Y = 89, Z = 90;
+            if (e.keyCode === Z && e.ctrlKey) {
+                if (this.tps.hasTransactionToUndo()) {
+                    this.tps.undoTransaction();
+                    this.updateToolbarbuttons();
+                }
+                this.setState(prevState => ({
+                    sessionData: prevState.sessionData
+                }), () => {
+                    // ANY AFTER EFFECTS?
+                });
+            }
+            else if (e.keyCode === Y && e.ctrlKey) {
+                if(this.tps.hasTransactionToRedo()){
+                    this.tps.doTransaction();
+                    this.updateToolbarbuttons();
+                }
+                this.setState(prevState => ({
+                    sessionData: prevState.sessionData
+                }), () => {
+                    // ANY AFTER EFFECTS?
+                });
+            }
+    }
+
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
             // GET THE LISTS
             return keyPair1.name.localeCompare(keyPair2.name);
         });
     }
+    
     // THIS FUNCTION BEGINS THE PROCESS OF CREATING A NEW LIST
     createNewList = () => {
         // FIRST FIGURE OUT WHAT THE NEW LIST'S KEY AND NAME WILL BE
@@ -128,6 +167,7 @@ class App extends React.Component {
         }), () => {
             // ANY AFTER EFFECTS?
         });
+        this.tps.clearAllTransactions();
         this.updateToolbarbuttons();
         this.activateClose();
     }
@@ -142,6 +182,7 @@ class App extends React.Component {
         });
         this.updateToolbarbuttons();
         this.deactivateClose();
+        this.deactivateTransaction();
     }
     deleteList = (keyNamePair) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
@@ -208,6 +249,7 @@ class App extends React.Component {
                 this.db.mutationUpdateSessionData(this.state.sessionData);
             });
             this.deactivateClose();
+            this.deactivateTransaction();
         }
         this.hideDeleteListModal();
         this.updateToolbarbuttons();
@@ -216,10 +258,13 @@ class App extends React.Component {
     ------------------ITEMS-----------------------
     */
     renameItem = (key, newText) => {
-        // addChangeItemTransaction
-        let oldText = this.state.currentList.items[key];
-        let transaction = new ChangeItem_Transaction(this, key, oldText, newText);
-        this.tps.addTransaction(transaction);
+        this.addChangeItemTransaction(key, newText);
+    }
+    
+    // Used to change the name of an Item 
+    changeItem = (key, text) => {
+        let currentList = this.state.currentList;
+        currentList.items[key] = text;
         this.setState(prevState => ({
             currentList: prevState.currentList,
             sessionData: {
@@ -233,13 +278,40 @@ class App extends React.Component {
             this.db.mutationUpdateList(this.state.currentList);
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
-        this.updateToolbarbuttons();
     }
-    // Used to change the name of an Item 
-    changeItem = (key, text) => {
-        let currentList = this.state.currentList;
-        currentList.items[key] = text;
+
+    /*
+    ------- TRANSACTIONS ------
+    */
+    addChangeItemTransaction = (key, newText) => {
+        let oldText = this.state.currentList.items[key];
+        if(oldText === newText){
+            return;
+        }
+        else{
+            let transaction = new ChangeItem_Transaction(this, key, oldText, newText);
+            this.tps.addTransaction(transaction);
+            this.updateToolbarbuttons();
+        }
     }
+
+    undo = () => {
+        if (this.tps.hasTransactionToUndo()) {
+            this.tps.undoTransaction();
+            this.updateToolbarbuttons();
+        }
+    }
+
+    redo = () => {
+        if(this.tps.hasTransactionToRedo()){
+            this.tps.doTransaction();
+            this.updateToolbarbuttons();
+        }
+    }
+
+    /*
+    -------- Button View -------
+    */
     updateToolbarbuttons(){
         if (!this.tps.hasTransactionToUndo()) {
             this.undoFlag = false;
@@ -263,12 +335,19 @@ class App extends React.Component {
         this.closeFlag = false;
     }
 
+    deactivateTransaction(){
+        this.undoFlag = false;
+        this.redoFlag = false;
+    }
+
     render() {
         return (
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
                     closeCallback={this.closeCurrentList} 
+                    undoCallback={this.undo}
+                    redoCallback={this.redo}
                     undo={this.undoFlag}
                     redo={this.redoFlag}
                     close={this.closeFlag}

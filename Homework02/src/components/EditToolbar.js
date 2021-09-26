@@ -4,6 +4,8 @@ export default class EditToolbar extends React.Component {
     render() {
         const {
             closeCallback,
+            undoCallback,
+            redoCallback,
             undo,
             redo,
             close
@@ -13,21 +15,22 @@ export default class EditToolbar extends React.Component {
                 {   undo ? 
                     <div 
                     id='undo-button' 
-                    className="top5-button">
+                    className="top5-button"
+                    onClick={undoCallback}>
                         &#x21B6;
                     </div> 
                     :
                     <div 
                     id='undo-button' 
-                    className="top5-button-disabled"
-                    >
+                    className="top5-button-disabled">
                         &#x21B6;
                     </div>
                 }
                 {   redo ? 
                     <div
                     id='redo-button'
-                    className="top5-button">
+                    className="top5-button"
+                    onClick={redoCallback}>
                         &#x21B7;
                     </div>
                     :
@@ -42,15 +45,13 @@ export default class EditToolbar extends React.Component {
                     <div
                         id='close-button'
                         className="top5-button"
-                        onClick={closeCallback}
-                    >
+                        onClick={closeCallback}>
                         &#x24E7;
                     </div>
                     :
                     <div
                         id='close-button'
-                        className="top5-button-disabled"
-                    >
+                        className="top5-button-disabled">
                         &#x24E7;
                     </div>
                 }   
