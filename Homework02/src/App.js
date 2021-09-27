@@ -14,7 +14,7 @@ import Statusbar from './components/Statusbar.js';
 // Undo and Redo Operations
 import jsTPS from "./common/jsTPS.js";
 import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js";
-// import MoveItem_Tranaction from "./transactions/MoveItem_Transaction.js";
+import MoveItem_Transaction from "./transactions/MoveItem_Transaction.js";
 
 class App extends React.Component {
     constructor(props) {
@@ -83,7 +83,7 @@ class App extends React.Component {
             return keyPair1.name.localeCompare(keyPair2.name);
         });
     }
-    
+
     // THIS FUNCTION BEGINS THE PROCESS OF CREATING A NEW LIST
     createNewList = () => {
         // FIRST FIGURE OUT WHAT THE NEW LIST'S KEY AND NAME WILL BE
@@ -255,7 +255,7 @@ class App extends React.Component {
         this.updateToolbarbuttons();
     }
     /*
-    ------------------ITEMS-----------------------
+    ------------------RENAME ITEMS-----------------------
     */
     renameItem = (key, newText) => {
         this.addChangeItemTransaction(key, newText);
@@ -263,10 +263,11 @@ class App extends React.Component {
     
     // Used to change the name of an Item 
     changeItem = (key, text) => {
+        // Directly changing the previous list
         let currentList = this.state.currentList;
         currentList.items[key] = text;
         this.setState(prevState => ({
-            currentList: prevState.currentList,
+            currentList: currentList,
             sessionData: {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter,
@@ -280,9 +281,6 @@ class App extends React.Component {
         });
     }
 
-    /*
-    ------- TRANSACTIONS ------
-    */
     addChangeItemTransaction = (key, newText) => {
         let oldText = this.state.currentList.items[key];
         if(oldText === newText){
@@ -294,6 +292,54 @@ class App extends React.Component {
             this.updateToolbarbuttons();
         }
     }
+
+    /*
+    ------- MOVE ITEMS ------
+    */
+    moveItemCallback = (oldIndex, newIndex) => {
+        this.addMoveItemTransaction();
+    }
+
+    moveItem = (oldIndex, newIndex) => {
+        let currentList = this.state.currentList;
+
+        if(oldIndex > newIndex) {
+            let hold = currentList.items[oldIndex];
+            for(let i = oldIndex-1; i >= newIndex; i--){
+                currentList.items[i+1] = currentList.items[i];
+            }
+            currentList.items[newIndex] = hold;
+        }
+        else if(newIndex > oldIndex) {
+            let hold = currentList.items[oldIndex];
+            for(let i = oldIndex; i <= newIndex; i++){
+                currentList.items[i] = currentList.items[i+1];
+            }
+            currentList.items[newIndex] = hold;
+        }
+
+        this.setState(prevState => ({
+            currentList: currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs
+            }
+        }), () => {
+            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+            // THE TRANSACTION STACK IS CLEARED
+            this.db.mutationUpdateList(this.state.currentList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        });
+    }
+    addMoveItemTransaction = (oldIndex, newIndex) => {
+        if(oldIndex === newIndex){
+            return;
+        }
+        let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
+        this.tps.addTransaction(transaction);
+    }
+    
 
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -364,6 +410,7 @@ class App extends React.Component {
                 <Workspace
                     currentList={this.state.currentList} 
                     renameItemCallBack={this.renameItem}
+                    moveItemCallBack={this.moveItemCallback}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />
