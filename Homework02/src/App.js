@@ -109,6 +109,7 @@ class App extends React.Component {
         // FORCE A CALL TO render, BUT THIS UPDATE IS ASYNCHRONOUS,
         // SO ANY AFTER EFFECTS THAT NEED TO USE THIS UPDATED STATE
         // SHOULD BE DONE VIA ITS CALLBACK
+        this.currentIndex = -1;
         this.setState(prevState => ({
             currentList: newList,
             sessionData: {
@@ -140,7 +141,7 @@ class App extends React.Component {
         if (currentList.key === key) {
             currentList.name = newName;
         }
-
+        this.currentIndex = -1;
         this.setState(prevState => ({
             currentList: prevState.currentList,
             sessionData: {
@@ -155,12 +156,14 @@ class App extends React.Component {
             list.name = newName;
             this.db.mutationUpdateList(list);
             this.db.mutationUpdateSessionData(this.state.sessionData);
+            this.tps.clearAllTransactions();
         });
         this.updateToolbarbuttons();
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
         let newCurrentList = this.db.queryGetList(key);
+        this.currentIndex = -1;
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
@@ -173,6 +176,7 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        this.currentIndex = -1;
         this.setState(prevState => ({
             currentList: null,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
@@ -221,6 +225,7 @@ class App extends React.Component {
         }
         newKeyNamePairs.splice(index, 1);
         this.sortKeyNamePairsByName(newKeyNamePairs);
+        this.currentIndex = -1;
         // Deleting a different List
         if(this.state.currentList !== null && this.state.currentList.key !== key){
             this.setState(prevState => ({
@@ -297,12 +302,14 @@ class App extends React.Component {
     ------- MOVE ITEMS ------
     */
     moveItemCallback = (oldIndex, newIndex) => {
-        this.addMoveItemTransaction();
+        this.currentIndex = -1;
+        this.addMoveItemTransaction(Number(oldIndex), Number(newIndex));
     }
 
     moveItem = (oldIndex, newIndex) => {
-        let currentList = this.state.currentList;
-
+        let currentList = this.db.queryGetList(this.state.currentList.key);
+        oldIndex = Number(oldIndex);
+        newIndex = Number(newIndex);
         if(oldIndex > newIndex) {
             let hold = currentList.items[oldIndex];
             for(let i = oldIndex-1; i >= newIndex; i--){
@@ -317,7 +324,8 @@ class App extends React.Component {
             }
             currentList.items[newIndex] = hold;
         }
-
+        this.currentIndex = -1;
+        this.oldIndex = undefined;
         this.setState(prevState => ({
             currentList: currentList,
             sessionData: {
@@ -332,14 +340,40 @@ class App extends React.Component {
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
+
     addMoveItemTransaction = (oldIndex, newIndex) => {
         if(oldIndex === newIndex){
+            this.moveItem(oldIndex, newIndex);
             return;
         }
         let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
         this.tps.addTransaction(transaction);
+        this.updateToolbarbuttons();
     }
     
+    dragEnterHandler = (oldIndex, newIndex) => {
+        let currentList = this.state.currentList;
+        let hold = currentList.items[oldIndex];
+        currentList.items[oldIndex] = currentList.items[newIndex];
+        currentList.items[newIndex] = hold;
+        this.currentIndex = oldIndex;
+
+        this.setState(prevState => ({
+            currentList: currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs
+            }
+        }), () => {
+ 
+        });
+    }
+
+    oldIndexCallBack = (oldIndex, flag) => {
+        this.oldIndex = oldIndex;
+
+    }
 
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -411,6 +445,10 @@ class App extends React.Component {
                     currentList={this.state.currentList} 
                     renameItemCallBack={this.renameItem}
                     moveItemCallBack={this.moveItemCallback}
+                    dragEnterHandler={this.dragEnterHandler}
+                    currentIndex={this.currentIndex}
+                    oldIndexCallBack={this.oldIndexCallBack}
+                    oldIndex={this.oldIndex}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />
