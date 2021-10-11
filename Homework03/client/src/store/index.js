@@ -18,7 +18,8 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
-    CREATE_NEW_LIST: "CREATE_NEW_LIST"
+    CREATE_NEW_LIST: "CREATE_NEW_LIST",
+    UPDATE_LIST_ITEM: "UPDATE_LIST_ITEM"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -108,6 +109,16 @@ export const useGlobalStore = () => {
                     listMarkedForDeletion: null
                 });
             }
+            case GlobalStoreActionType.UPDATE_LIST_ITEM: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: true,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null
+                })
+            }
             default:
                 return store;
         }
@@ -117,6 +128,21 @@ export const useGlobalStore = () => {
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
     /* Functions */
+    store.updateListItem = function(index, text) {
+        async function asyncUpdateNewList(){
+            let changedList = store.currentList
+            changedList.items[index] = text;
+            let response = await api.updateTop5ListById(changedList._id, changedList);
+            if(response.data.success){
+                storeReducer({
+                    type:GlobalStoreActionType.UPDATE_LIST_ITEM,
+                    payload: changedList
+                })
+            }
+        }
+        asyncUpdateNewList();
+    }
+
     store.createNewList = function() {
         async function asyncCreateNewList(){
             let name = "Untitled" + store.newListCounter;

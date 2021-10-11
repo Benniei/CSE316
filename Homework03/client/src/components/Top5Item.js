@@ -10,7 +10,7 @@ function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [draggedTo, setDraggedTo] = useState(0);
     const [ editActive, setEditActive ] = useState(false);
-    const [ text, setText ] = useState("");
+    const [ text, setText ] = useState(props.text);
 
     function handleDragStart(event) {
         event.dataTransfer.setData("item", event.target.id);
@@ -44,8 +44,7 @@ function Top5Item(props) {
     }
 
     function handleToggleEdit(event) {
-        // event.stopPropagation();
-        setText(props.text)
+        event.stopPropagation();
         toggleEdit()
     }
 
@@ -65,7 +64,7 @@ function Top5Item(props) {
     }
 
     function handleBlur(event) {
-        //update stuff
+        store.updateListItem(index, text);
         toggleEdit();
     }
 
@@ -104,7 +103,7 @@ function Top5Item(props) {
                 onBlur={handleBlur}
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
-                defaultValue={props.text}
+                defaultValue={text}
                 autoFocus
             />
         </div>;
