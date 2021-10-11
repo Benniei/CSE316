@@ -45,6 +45,7 @@ function Top5Item(props) {
 
     function handleToggleEdit(event) {
         // event.stopPropagation();
+        setText(props.text)
         toggleEdit()
     }
 

@@ -28,6 +28,7 @@ function ListCard(props) {
 
     function handleToggleEdit(event) {
         event.stopPropagation();
+        setText(idNamePair.name);
         toggleEdit();
     }
 
@@ -41,10 +42,14 @@ function ListCard(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
+            handleBlur(event);
         }
+    }
+
+    function handleBlur(event){
+        let id = event.target.id.substring("list-".length);
+        store.changeListName(id, text);
+        toggleEdit();
     }
 
     function handleUpdateText(event) {
@@ -96,7 +101,9 @@ function ListCard(props) {
                 type='text'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
+                onBlur={handleBlur}
                 defaultValue={idNamePair.name}
+                autoFocus
             />;
     }
     return (
