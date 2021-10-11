@@ -69,7 +69,7 @@ function Top5Item(props) {
     }
 
     function handleBlur(event) {
-        store.updateListItem(index, text);
+        store.addChangeItemTransaction(index, text);
         toggleEdit();
     }
 

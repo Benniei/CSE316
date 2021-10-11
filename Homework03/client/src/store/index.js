@@ -2,6 +2,7 @@ import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
 import MoveItem_Transaction from '../transactions/MoveItem_Transaction'
+import ChangeItem_Transaction from '../transactions/ChangeItem_Transaction';
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -128,21 +129,6 @@ export const useGlobalStore = () => {
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
     /* Functions */
-    store.updateListItem = function(index, text) {
-        async function asyncUpdateNewList(){
-            let changedList = store.currentList
-            changedList.items[index] = text;
-            let response = await api.updateTop5ListById(changedList._id, changedList);
-            if(response.data.success){
-                storeReducer({
-                    type:GlobalStoreActionType.UPDATE_LIST_ITEM,
-                    payload: changedList
-                })
-            }
-        }
-        asyncUpdateNewList();
-    }
-
     store.createNewList = function() {
         async function asyncCreateNewList(){
             let name = "Untitled" + store.newListCounter;
@@ -281,6 +267,18 @@ export const useGlobalStore = () => {
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
     }
+
+    /* Change Item Transaction */
+    store.addChangeItemTransaction = function (index, newText) {
+        let transaction = new ChangeItem_Transaction(store, index, store.currentList.items[index], newText);
+        tps.addTransaction(transaction);
+    }
+
+    store.changeItem = function (index, text) {
+        store.currentList.items[index] = text;
+        store.updateCurrentList();  
+    }   
+
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
             const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
