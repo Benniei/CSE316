@@ -307,6 +307,12 @@ export const useGlobalStore = () => {
             payload: null
         });
     }
+    store.setIsItemEditActive = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
+            payload: store.currentList
+        });
+    }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
