@@ -20,7 +20,8 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
-    UPDATE_LIST_ITEM: "UPDATE_LIST_ITEM"
+    UPDATE_LIST_ITEM: "UPDATE_LIST_ITEM",
+    SET_ITEM_NAME_EDIT_ACTIVE: "SET_ITEM_NAME_EDIT_ACTIVE"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -119,6 +120,16 @@ export const useGlobalStore = () => {
                     isItemEditActive: false,
                     listMarkedForDeletion: null
                 })
+            }
+            case GlobalStoreActionType.SET_ITEM_NAME_EDIT_ACTIVE: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: true,
+                    listMarkedForDeletion: null
+                });
             }
             default:
                 return store;
@@ -307,7 +318,7 @@ export const useGlobalStore = () => {
     }
     store.setIsItemEditActive = function () {
         storeReducer({
-            type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
+            type: GlobalStoreActionType.SET_ITEM_NAME_EDIT_ACTIVE,
             payload: store.currentList
         });
     }
