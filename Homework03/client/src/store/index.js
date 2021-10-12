@@ -21,7 +21,9 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     UPDATE_LIST_ITEM: "UPDATE_LIST_ITEM",
-    SET_ITEM_NAME_EDIT_ACTIVE: "SET_ITEM_NAME_EDIT_ACTIVE"
+    SET_ITEM_NAME_EDIT_ACTIVE: "SET_ITEM_NAME_EDIT_ACTIVE",
+    MARK_FOR_DELETE: "MARK_FOR_DELETE",
+    DELETE_LIST: "DELETE_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -116,7 +118,7 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: true,
+                    isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null
                 })
@@ -131,6 +133,26 @@ export const useGlobalStore = () => {
                     listMarkedForDeletion: null
                 });
             }
+            case GlobalStoreActionType.MARK_FOR_DELETE: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: payload.keyNamePair
+                });
+            }
+            case GlobalStoreActionType.DELETE_LIST: {
+                return setStore({
+                    idNamePairs: payload,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null
+                });
+            }
             default:
                 return store;
         }
@@ -140,6 +162,54 @@ export const useGlobalStore = () => {
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
     /* Functions */
+    store.deleteMarkedList = function() {
+        async function deleteItem() {
+            let response = await api.deleteTop5ListById(store.listMarkedForDeletion._id);
+            if(response.data.success){
+                async function updateKeyNamePair() {
+                    let response = await api.getTop5ListPairs();
+                    let idNamePair = response.data.idNamePairs;
+                    console.log(idNamePair)
+                    if(response.data.success){
+                        storeReducer({
+                            type: GlobalStoreActionType.DELETE_LIST,
+                            payload: idNamePair
+                        });
+                    }
+                }
+                updateKeyNamePair();
+            }
+        }
+        deleteItem();
+    }
+
+    store.showDeleteListModel = function() {
+        let modal = document.getElementById("delete-modal");
+        modal.classList.add("is-visible");
+    }
+
+    store.hideDeleteListModal = function() {
+        let modal = document.getElementById("delete-modal");
+        modal.classList.remove("is-visible");
+    }
+
+    store.initDeleteList = function(idnamePair) {
+        async function getList(){
+            let response = await api.getTop5ListById(idnamePair._id);
+            if(response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.MARK_FOR_DELETE,
+                    payload: {
+                        currentList: response.data.top5List,
+                        keyNamePair: idnamePair
+                    }
+                });
+            }
+        }
+        getList();
+        store.showDeleteListModel();
+    }
+
     store.createNewList = function() {
         async function asyncCreateNewList(){
             let name = "Untitled" + store.newListCounter;
