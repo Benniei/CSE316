@@ -233,6 +233,7 @@ export const useGlobalStore = () => {
                                 newListCounter: newCounter
                             }
                         });
+                        store.history.push("/top5list/" + top5List._id);
                     }
                 }
                 getListPairs(top5List);
