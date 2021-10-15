@@ -12,6 +12,7 @@ function EditToolbar() {
     const history = useHistory();
 
     let enabledButtonClass = "top5-button";
+    let disabledButtonClass = "top5-button-disabled"
     function handleUndo() {
         store.undo();
     }
@@ -22,33 +23,58 @@ function EditToolbar() {
         history.push("/");
         store.closeCurrentList();
     }
-    let editStatus = false;
-    if (store.isListNameEditActive) {
-        editStatus = true;
-    }
+
+    let undo = store.status? store.status[0]: false;
+    let redo = store.status? store.status[1]: false;
+    let close = store.status? store.status[2]: false;
+
     return (
         <div id="edit-toolbar">
-            <div
-                disabled={editStatus}
-                id='undo-button'
-                onClick={handleUndo}
-                className={enabledButtonClass}>
-                &#x21B6;
-            </div>
-            <div
-                disabled={editStatus}
-                id='redo-button'
-                onClick={handleRedo}
-                className={enabledButtonClass}>
-                &#x21B7;
-            </div>
-            <div
-                disabled={editStatus}
-                id='close-button'
-                onClick={handleClose}
-                className={enabledButtonClass}>
-                &#x24E7;
-            </div>
+            {undo?
+                <div
+                    disabled={false}
+                    id='undo-button'
+                    onClick={handleUndo}
+                    className={enabledButtonClass}>
+                    &#x21B6;
+                </div>:
+                <div
+                    disabled={true}
+                    id='undo-button'
+                    className={disabledButtonClass}>
+                    &#x21B6;
+                </div>
+            }
+            {redo?
+                <div
+                    disabled={false}
+                    id='redo-button'
+                    onClick={handleRedo}
+                    className={enabledButtonClass}>
+                    &#x21B7;
+                </div>:
+                <div
+                    disabled={true}
+                    id='redo-button'
+                    className={disabledButtonClass}>
+                    &#x21B7;
+                </div>
+            }  
+            {close?
+                <div
+                    disabled={false}
+                    id='close-button'
+                    onClick={handleClose}
+                    className={enabledButtonClass}>
+                    &#x24E7;
+                </div>:
+                <div
+                    disabled={true}
+                    id='close-button'
+                    className={disabledButtonClass}>
+                    &#x24E7;
+                </div>
+            }
         </div>
     )
 }
