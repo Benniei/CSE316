@@ -57,7 +57,7 @@ export const useGlobalStore = () => {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), payload.top5List !== null]
+                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false]
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -105,7 +105,7 @@ export const useGlobalStore = () => {
                     isListNameEditActive: true,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), payload !== null]
+                    status: [false, false, false]
                 });
             }
             // Creates a new empty list
@@ -150,7 +150,7 @@ export const useGlobalStore = () => {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: payload.keyNamePair,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), payload.currentList !== null]
+                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false]
                 });
             }
             case GlobalStoreActionType.DELETE_LIST: {
