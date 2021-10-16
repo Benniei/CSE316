@@ -93,7 +93,7 @@ export const useGlobalStore = () => {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), payload !== null]
+                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), true]
                 });
             }
             // START EDITING A LIST NAME
@@ -139,7 +139,7 @@ export const useGlobalStore = () => {
                     isListNameEditActive: false,
                     isItemEditActive: true,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), payload !== null]
+                    status: [false, false, false]
                 });
             }
             case GlobalStoreActionType.MARK_FOR_DELETE: {
@@ -364,6 +364,13 @@ export const useGlobalStore = () => {
 
     /* Change Item Transaction */
     store.addChangeItemTransaction = function (index, newText) {
+        if(newText === store.currentList.items[index]){
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: store.currentList
+            });
+            return;
+        }
         let transaction = new ChangeItem_Transaction(store, index, store.currentList.items[index], newText);
         tps.addTransaction(transaction);
     }
