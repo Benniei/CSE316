@@ -34,7 +34,7 @@ function EditToolbar() {
                 <div
                     disabled={false}
                     id='undo-button'
-                    onClick={handleUndo}
+                    onMouseDown={handleUndo}
                     className={enabledButtonClass}>
                     &#x21B6;
                 </div>:
@@ -49,7 +49,7 @@ function EditToolbar() {
                 <div
                     disabled={false}
                     id='redo-button'
-                    onClick={handleRedo}
+                    onMouseDown={handleRedo}
                     className={enabledButtonClass}>
                     &#x21B7;
                 </div>:
@@ -64,7 +64,7 @@ function EditToolbar() {
                 <div
                     disabled={false}
                     id='close-button'
-                    onClick={handleClose}
+                    onMouseDown={handleClose}
                     className={enabledButtonClass}>
                     &#x24E7;
                 </div>:
