@@ -14,6 +14,9 @@ getLoggedIn = async (req, res) => {
             }
         }).send();
     })
+    return res.status(400).json({
+        errorMessage: "Not Logged In"
+    }).send();
 }
 
 registerUser = async (req, res) => {
@@ -96,7 +99,29 @@ loginUser = async (req, res) => {
                     errorMessage: "Incorrect Username or Password"
                 })
         }
-        console.log(existingUser);
+        bcrypt.compare(password, existingUser.passwordHash, function(err, result) {
+            if(!result){
+                // WRONG PASSWORD
+                return res
+                    .status(400)
+                    .json({errorMessage: "Incorrect Username or Password"});
+            }
+        });
+        // Login User
+        const token = auth.signToken(existingUser);
+        
+        await res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email
+            }
+        }).send();
     }catch(err){
         console.error(err);
         res.status(500).send();
@@ -105,5 +130,6 @@ loginUser = async (req, res) => {
 
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser
 }

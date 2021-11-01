@@ -25,7 +25,6 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
     auth.loginUser({
         email: formData.get('email'),
         password: formData.get('password')
