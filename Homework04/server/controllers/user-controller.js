@@ -1,6 +1,7 @@
 const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
+const { loginUser } = require('../../client/src/api')
 
 getLoggedIn = async (req, res) => {
     auth.verify(req, res, async function () {
@@ -73,6 +74,31 @@ registerUser = async (req, res) => {
             }
         }).send();
     } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+loginUser = async (req, res) => {
+    try{
+        const { email, password } = req.body;
+        if(!email || !password) {
+            return res
+                .status(400)
+                .json({errorMessage: "Please enter all required fields."});
+        }
+
+        const existingUser = await User.findOne({email: email});
+        if(!existingUser) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "Incorrect Username or Password"
+                })
+        }
+        console.log(existingUser);
+    }catch(err){
         console.error(err);
         res.status(500).send();
     }

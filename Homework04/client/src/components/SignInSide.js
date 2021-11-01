@@ -1,4 +1,6 @@
-import * as React from 'react';
+import { useContext } from 'react';
+import AuthContext from '../auth';
+import Copyright from './Copyright';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,31 +14,22 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { GlobalStoreContext } from '../store'
 
 const theme = createTheme();
 
 export default function SignInSide() {
+  const { auth } = useContext(AuthContext);
+  const { store } = useContext(GlobalStoreContext)
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    auth.loginUser({
+        email: formData.get('email'),
+        password: formData.get('password')
+    }, store);
   };
 
   return (
