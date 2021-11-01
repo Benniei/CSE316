@@ -1,7 +1,6 @@
 const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
-const { loginUser } = require('../../client/src/api')
 
 getLoggedIn = async (req, res) => {
     auth.verify(req, res, async function () {
