@@ -10,7 +10,8 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER",
     LOGIN_USER: "LOGIN_USER",
-    LOGIN_ERROR: "LOGIN_ERROR"
+    LOGIN_ERROR: "LOGIN_ERROR",
+    LOGOUT: "LOGOUT"
 }
 
 function AuthContextProvider(props) {
@@ -61,6 +62,14 @@ function AuthContextProvider(props) {
                     message: payload.errorMessage
                 })
             }
+            case AuthActionType.LOGOUT: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    modal: false,
+                    message: null
+                })
+            }
             default:
                 return auth;
         }
@@ -109,22 +118,31 @@ function AuthContextProvider(props) {
 
     auth.loginUser = async function(userData, store) {
         const response = await api.loginUser(userData);
-        if(response.status === 200) {
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
-            store.loadIdNamePairs();
+        if(response){
+            if(response.status === 200) {
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+            else{
+                authReducer({
+                    type: AuthActionType.LOGIN_ERROR,
+                    payload: response.data
+                });
+            }
         }
-        else{
-            authReducer({
-                type: AuthActionType.LOGIN_ERROR,
-                payload: response.data
-            });
-        }
+    }
+
+    auth.logoutUser = async function() {
+        authReducer({
+            type: AuthActionType.LOGOUT,
+            payload: null
+        })
     }
 
     return (
