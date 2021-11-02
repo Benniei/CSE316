@@ -19,12 +19,14 @@ const style = {
 
 export default function BasicModal() {
     const { auth } = useContext(AuthContext);
-
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     return (
         <div>
         <Modal
             open={auth.modal}
-            onClose={auth.modal}
+            onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >

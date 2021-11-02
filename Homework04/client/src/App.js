@@ -9,7 +9,8 @@ import {
     RegisterScreen,
     SignInSide,
     Statusbar,
-    WorkspaceScreen
+    WorkspaceScreen,
+    BasicModal
 } from './components'
 
 /*
@@ -36,6 +37,7 @@ const App = () => {
                         <Route path="/top5list/:id" exact component={WorkspaceScreen} />
                     </Switch>
                     <Statusbar />
+                    <BasicModal />
                 </GlobalStoreContextProvider>
             </AuthContextProvider>
         </BrowserRouter>
