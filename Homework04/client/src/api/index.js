@@ -31,16 +31,20 @@ export const getTop5ListById = (id) => api.get(`/top5list/${id}`)
 
 export const getLoggedIn = () => api.get(`/loggedIn/`)
 .then(response => {
-    console.log(response);
     return response
  })
  .catch(error => {
     return error.response;
  });
 export const registerUser = (payload) => api.post(`/register/`, payload)
+.then(response => {
+    return response
+ })
+ .catch(error => {
+    return error.response
+ });
 export const loginUser = (payload) => api.post(`/login/`, payload)
 .then(response => {
-    console.log(response)
     return response
  })
  .catch(error => {

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useContext } from 'react';
 import AuthContext from '../auth';
 import Copyright from './Copyright';
@@ -15,12 +16,30 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { GlobalStoreContext } from '../store'
+import Modal from '@mui/material/Modal';
+import Alert from '@mui/material/Alert';
 
 const theme = createTheme();
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 
 export default function SignInSide() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext)
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -29,6 +48,9 @@ export default function SignInSide() {
         email: formData.get('email'),
         password: formData.get('password')
     }, store);
+    if(auth.modal){
+      handleOpen();
+    }
   };
 
   return (
@@ -115,6 +137,25 @@ export default function SignInSide() {
           </Box>
         </Grid>
       </Grid>
+      <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+              <Alert severity="error">{auth.message}</Alert>
+                <Button
+                  type="submit"
+                  onClick={handleClose}
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Ok
+                </Button>
+            </Box>
+        </Modal>
     </ThemeProvider>
   );
 }
