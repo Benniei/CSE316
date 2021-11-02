@@ -69,12 +69,14 @@ export default function AppBanner() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>        
+        </Menu>     
 
     let editToolbar = "";
+    let initials = "";
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
+        initials = auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0);
         if (store.currentList) {
             editToolbar = <EditToolbar />;
         }
@@ -98,23 +100,37 @@ export default function AppBanner() {
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            { getAccountMenu(auth.loggedIn) }
-                        </IconButton>
+                        {
+                            !store.currentList?
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                { getAccountMenu(auth.loggedIn) }
+                            </IconButton>
+                            :
+                            null
+                        }
                     </Box>
+                    <Typography                        
+                        variant="h4"
+                        noWrap
+                        component="div"
+                        sx={{ display: { xs: 'none', sm: 'block'}}}                        
+                    >
+                    {initials} 
+                    </Typography>
                 </Toolbar>
             </AppBar>
             {
                 menu
             }
+             
         </Box>
     );
 }
