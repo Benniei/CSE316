@@ -77,6 +77,7 @@ function AuthContextProvider(props) {
 
     auth.getLoggedIn = async function () {
         const response = await api.getLoggedIn();
+        
         if(response){
             if (response.status === 200) {
                 authReducer({
@@ -98,21 +99,23 @@ function AuthContextProvider(props) {
 
     auth.registerUser = async function(userData, store) {
         const response = await api.registerUser(userData);
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
-            store.loadIdNamePairs();
-        }
-        else{
-            authReducer({
-                type: AuthActionType.LOGIN_ERROR,
-                payload: response.data
-            });
+        if(response){
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.REGISTER_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+            else{
+                authReducer({
+                    type: AuthActionType.LOGIN_ERROR,
+                    payload: response.data
+                });
+            }
         }
     }
 
@@ -138,11 +141,15 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.logoutUser = async function() {
-        authReducer({
-            type: AuthActionType.LOGOUT,
-            payload: null
-        })
+    auth.logoutUser = async function(userData, store) {
+        const response = await api.logoutUser(userData, store);
+        console.log(response);
+        if(response.status === 200){
+            authReducer({
+                type: AuthActionType.LOGOUT,
+                payload: null
+            });
+        }
     }
 
     return (

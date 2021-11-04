@@ -51,6 +51,12 @@ export const loginUser = (payload) => api.post(`/login/`, payload)
     return error.response
  });
 export const logoutUser = () => api.get(`/logout/`)
+.then(response => {
+    return response
+ })
+ .catch(error => {
+    return error.response
+ });
 
 const apis = {
     createTop5List,
