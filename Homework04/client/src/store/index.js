@@ -230,7 +230,10 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
-        const response = await api.getTop5ListPairs();
+        let payload = {
+            ownerEmail: auth.user.email
+        };
+        const response = await api.getTop5ListPairs(payload);
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
             storeReducer({
@@ -248,6 +251,7 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
     // showDeleteListModal, and hideDeleteListModal
     store.markListForDeletion = async function (id) {
+
         // GET THE LIST
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
