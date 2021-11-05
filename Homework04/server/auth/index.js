@@ -12,8 +12,8 @@ function authManager() {
                 })
             }
 
-            const verified = jwt.verify(token, process.env.JWT_SECRET)
-            req.userId = verified.userId;
+            // const verified = jwt.verify(token, process.env.JWT_SECRET)
+            // req.userId = verified.userId;
 
             next();
         } catch (err) {

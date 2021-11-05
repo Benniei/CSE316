@@ -1,11 +1,23 @@
 const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
+const jwt = require("jsonwebtoken")
 
 getLoggedIn = async (req, res) => {
-    if(req.userID){
+    if(req.userId || req.cookies.token){
         auth.verify(req, res, async function () {
-            const loggedInUser = await User.findOne({ _id: req.userId });
+            let verified = null;
+            let loggedInUser = null;
+            if(req.cookies.token) {
+                verified = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+                loggedInUser = await User.findOne({ _id: verified.userId });
+                if(!loggedInUser){
+                    loggedInUser = await User.findOne({ _id: req.userId });
+                }
+            }
+            else{
+                loggedInUser = await User.findOne({ _id: req.userId });
+            }
             if(loggedInUser){
                 return res.status(200).json({
                     loggedIn: true,
@@ -14,14 +26,16 @@ getLoggedIn = async (req, res) => {
                         lastName: loggedInUser.lastName,
                         email: loggedInUser.email
                     }
-                }).send();
+                });
             }
         })
     }
-    return res.status(400).json({
-        errorMessage: "Not Logged In"
-    }).send();
-}
+    else{
+        return res.status(400).json({
+            errorMessage: "Not Logged In"
+        }).send();
+    }
+    }
 
 registerUser = async (req, res) => {
     try {
