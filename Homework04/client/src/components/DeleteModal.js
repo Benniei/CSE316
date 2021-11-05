@@ -36,6 +36,11 @@ export default function DeleteModal() {
         flag = false;
     }
 
+    function handleDeleteList(){
+        store.deleteMarkedList();
+        flag = false;
+    }
+
 
     return(
         <Modal
@@ -65,6 +70,7 @@ export default function DeleteModal() {
                     <Button
                     type="submit"
                     fullWidth
+                    onClick={handleDeleteList}
                     variant="contained"
                     >
                     Confirm
