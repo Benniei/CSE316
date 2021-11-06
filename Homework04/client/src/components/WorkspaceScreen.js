@@ -27,6 +27,16 @@ function WorkspaceScreen() {
                 }
             </List>;
     }
+    else{
+        let url = document.URL;
+        let index = url.lastIndexOf("top5list");
+        let listid;
+        listid = url.substring(index+9);
+        if(listid.lastIndexOf("/") !== -1){
+            listid = listid.substring(0, listid.length-1);
+        }
+        store.setCurrentList(listid);
+    }
     return (
         <div id="top5-workspace">
             <div id="workspace-edit">

@@ -215,6 +215,8 @@ function GlobalStoreContextProvider(props) {
         history.push("/");
     }
 
+   
+
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
