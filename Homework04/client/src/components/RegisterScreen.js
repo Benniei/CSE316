@@ -31,9 +31,16 @@ const style = {
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext)
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+
+    let flag = false;
+    if(auth.modal){
+        flag = true;
+    }
+
+    function closeModal(){ 
+        auth.closeModal();
+        flag = false;
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -45,9 +52,6 @@ export default function RegisterScreen() {
             password: formData.get('password'),
             passwordVerify: formData.get('passwordVerify')
         }, store);
-        if(auth.modal){
-            handleOpen();
-        }
     };
 
     return (
@@ -142,8 +146,8 @@ export default function RegisterScreen() {
                 </Box>
                 <Copyright sx={{ mt: 5 }} />
                 <Modal
-                    open={open}
-                    onClose={handleClose}
+                    open={flag}
+                    onClose={closeModal}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
@@ -151,7 +155,7 @@ export default function RegisterScreen() {
                         <Alert severity="error">{auth.message}</Alert>
                         <Button
                         type="submit"
-                        onClick={handleClose}
+                        onClick={closeModal}
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}

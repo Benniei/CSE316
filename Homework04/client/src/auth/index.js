@@ -11,7 +11,8 @@ export const AuthActionType = {
     REGISTER_USER: "REGISTER_USER",
     LOGIN_USER: "LOGIN_USER",
     LOGIN_ERROR: "LOGIN_ERROR",
-    LOGOUT: "LOGOUT"
+    LOGOUT: "LOGOUT",
+    CLOSE_MODAL: "CLOSE_MODAL"
 }
 
 function AuthContextProvider(props) {
@@ -63,6 +64,14 @@ function AuthContextProvider(props) {
                 })
             }
             case AuthActionType.LOGOUT: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    modal: false,
+                    message: null
+                })
+            }
+            case AuthActionType.CLOSE_MODAL: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
@@ -142,6 +151,13 @@ function AuthContextProvider(props) {
                 payload: null
             });
         }
+    }
+
+    auth.closeModal = async function() {
+        authReducer({
+            type: AuthActionType.CLOSE_MODAL,
+            payload: null
+        })
     }
 
     return (

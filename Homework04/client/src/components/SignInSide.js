@@ -36,10 +36,17 @@ const style = {
 
 export default function SignInSide() {
   const { auth } = useContext(AuthContext);
-  const { store } = useContext(GlobalStoreContext)
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const { store } = useContext(GlobalStoreContext);
+
+  let flag = false;
+  if(auth.modal){
+      flag = true;
+  }
+
+  function closeModal(){ 
+      auth.closeModal();
+      flag = false;
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,9 +55,6 @@ export default function SignInSide() {
         email: formData.get('email'),
         password: formData.get('password')
     }, store);
-    if(auth.modal){
-      handleOpen();
-    }
   };
 
   return (
@@ -138,8 +142,8 @@ export default function SignInSide() {
         </Grid>
       </Grid>
       <Modal
-            open={open}
-            onClose={handleClose}
+            open={flag}
+            onClose={closeModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
@@ -147,7 +151,7 @@ export default function SignInSide() {
               <Alert severity="error">{auth.message}</Alert>
                 <Button
                   type="submit"
-                  onClick={handleClose}
+                  onClick={closeModal}
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
