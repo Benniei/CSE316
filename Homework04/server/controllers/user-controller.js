@@ -124,22 +124,23 @@ loginUser = async (req, res) => {
                     .status(400)
                     .json({errorMessage: "Incorrect Username or Password"});
             }
-        });
-        // Login User
-        const token = auth.signToken(existingUser);
+            else{
+                const token = auth.signToken(existingUser);
         
-        await res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        }).status(200).json({
-            success: true,
-            user: {
-                firstName: existingUser.firstName,
-                lastName: existingUser.lastName,
-                email: existingUser.email
+                return res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none"
+                }).status(200).json({
+                    success: true,
+                    user: {
+                        firstName: existingUser.firstName,
+                        lastName: existingUser.lastName,
+                        email: existingUser.email
+                    }
+                }).send();
             }
-        }).send();
+        });
     }catch(err){
         console.error(err);
         res.status(500).send();
