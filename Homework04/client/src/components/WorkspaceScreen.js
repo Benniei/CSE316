@@ -13,6 +13,11 @@ function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
 
     let editItems = "";
+    let hehFlag = false;
+    console.log(hehFlag);
+    if(store.heh){
+        hehFlag = true;
+    }
     if (store.currentList) {
         editItems = 
             <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -27,7 +32,7 @@ function WorkspaceScreen() {
                 }
             </List>;
     }
-    else{
+    else if (hehFlag === false){
         let url = document.URL;
         let index = url.lastIndexOf("top5list");
         let listid;
@@ -38,6 +43,7 @@ function WorkspaceScreen() {
         store.setCurrentList(listid);
     }
     return (
+        !hehFlag ?
         <div id="top5-workspace">
             <div id="workspace-edit">
                 <div id="edit-numbering">
@@ -49,6 +55,16 @@ function WorkspaceScreen() {
                 </div>
                 {editItems}
             </div>
+        </div>
+        :
+        <div>
+            <center>
+                <h1>This list aint your list, it is my list NOW </h1>
+                <img src="https://c.tenor.com/ZztVmkKG2TIAAAAM/pepe-sad-pepe-crying.gif" />
+            </center>
+            <center>
+                <img src="https://c.tenor.com/aRyBninVp0IAAAAM/sad-pepe.gif" />
+            </center>
         </div>
     )
 }
