@@ -131,6 +131,7 @@ getTop5ListPairs = async (req, res) => {
                     ownerEmail: list.ownerEmail
                 };
                 
+                // ! pruning results to fit the body
                 if(pair.ownerEmail === body.ownerEmail)
                     pairs.push(pair);
             }
