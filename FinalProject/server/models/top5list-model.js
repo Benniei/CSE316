@@ -5,7 +5,7 @@ const Top5ListSchema = new Schema(
     {
         name: { type: String, required: true },
         items: { type: [String], required: true },
-        ownerEmail: {type: String, required: true},
+        loginName: {type: String, required: true},
         community: {type: Boolean, required: true},
         view: {type: Number},
         publishedDate: {type: Date},

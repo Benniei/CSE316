@@ -50,26 +50,46 @@ updateTop5List = async (req, res) => {
                 message: 'Top 5 List not found!',
             })
         }
-
-        top5List.name = body.name
-        top5List.items = body.items
+        
+        // ! update the likes dislikes using here
+        // Normal list update
+        if(body.name != null && body.items != null){
+            top5List.name = body.name
+            top5List.items = body.items
+        }
+        if(body.likes != null){
+            if(top5List.likes)
+                top5List.likes = top5List.likes + 1;
+            else
+                top5List.likes = 1;
+        }
+        if(body.dislikes != null) {
+            if(top5List.dislikes)
+                top5List.dislikes = top5List.dislikes + 1;
+            else
+                top5List.dislikes = 1;
+        }
+        if(body.comments != null) {
+            top5List.comments.push(body.comments)
+        }
         top5List
-            .save()
-            .then(() => {
-                console.log("SUCCESS!!!");
-                return res.status(200).json({
-                    success: true,
-                    id: top5List._id,
-                    message: 'Top 5 List updated!',
+                .save()
+                .then(() => {
+                    console.log("SUCCESS!!!");
+                    return res.status(200).json({
+                        success: true,
+                        id: top5List._id,
+                        message: 'Top 5 List updated!',
+                    })
                 })
-            })
-            .catch(error => {
-                console.log("FAILURE: " + JSON.stringify(error));
-                return res.status(404).json({
-                    error,
-                    message: 'Top 5 List not updated!',
+                .catch(error => {
+                    console.log("FAILURE: " + JSON.stringify(error));
+                    return res.status(404).json({
+                        error,
+                        message: 'Top 5 List not updated!',
+                    })
                 })
-            })
+
     })
 }
 
@@ -128,12 +148,24 @@ getTop5ListPairs = async (req, res) => {
                 let pair = {
                     _id: list._id,
                     name: list.name,
-                    ownerEmail: list.ownerEmail
+                    loginName: list.loginName,
+                    community: list.community
                 };
                 
                 // ! pruning results to fit the body
-                if(pair.ownerEmail === body.ownerEmail)
+                
+                
+                if(body.community != null && pair.community === body.community) {
                     pairs.push(pair);
+                }
+                else{
+                    // Query for people list or own list
+                    if(body.loginName != null && pair.loginName === body.loginName)
+                        pairs.push(pair);
+                    // Query by name of list that is not a part of the community list
+                    if(body.name != null && body.community == null && pair.name === body.name)
+                        pairs.push(pair);
+                }
             }
             return res.status(200).json({ success: true, idNamePairs: pairs })
         }
