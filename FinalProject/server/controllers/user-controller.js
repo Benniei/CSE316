@@ -39,8 +39,8 @@ getLoggedIn = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        const { firstName, lastName, email, password, passwordVerify, loginName} = req.body;
+        if (!firstName || !lastName || !email || !password || !passwordVerify || !loginName) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -68,13 +68,22 @@ registerUser = async (req, res) => {
                     errorMessage: "An account with this email address already exists."
                 })
         }
+        existingUser = await User.findOne({ loginName: loginName });
+        if (existingUser) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "An account with this login name already exists."
+                })
+        }
 
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const passwordHash = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            firstName, lastName, email, passwordHash, loginName
         });
         const savedUser = await newUser.save();
 
@@ -90,7 +99,8 @@ registerUser = async (req, res) => {
             user: {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
-                email: savedUser.email
+                email: savedUser.email,
+                loginName: savedUser.loginName
             }
         }).send();
     } catch (err) {
@@ -101,14 +111,16 @@ registerUser = async (req, res) => {
 
 loginUser = async (req, res) => {
     try{
-        const { email, password } = req.body;
-        if(!email || !password) {
+        const { user, password } = req.body;
+        if(!user || !password) {
             return res
                 .status(400)
                 .json({errorMessage: "Please enter all required fields."});
         }
 
-        const existingUser = await User.findOne({email: email});
+        const existingUser = await User.findOne({email: user});
+        if(!existingUser)
+            existingUser = await User.findOne({loginName: user})
         if(!existingUser) {
             return res
                 .status(400)
