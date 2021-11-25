@@ -243,12 +243,15 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
+
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
-            ownerEmail: auth.user.email
+            loginName: auth.user.loginName,
+            community: false
         };
         const response = await api.createTop5List(payload);
+
         if (response.data.success) {
             tps.clearAllTransactions();
             let newList = response.data.top5List;

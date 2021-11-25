@@ -23,6 +23,12 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 export const createTop5List = (payload) => api.post(`/top5list/`, payload)
+.then(response => {
+   return response
+})
+.catch(error => {
+   return error.response;
+});
 export const getAllTop5Lists = () => api.get(`/top5lists/`)
 export const getTop5ListPairs = (payload) => api.post(`/top5listpairs/`, payload)
 export const updateTop5ListById = (id, payload) => api.put(`/top5list/${id}`, payload)

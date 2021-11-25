@@ -24,7 +24,8 @@ getLoggedIn = async (req, res) => {
                     user: {
                         firstName: loggedInUser.firstName,
                         lastName: loggedInUser.lastName,
-                        email: loggedInUser.email
+                        email: loggedInUser.email,
+                        loginName: savedUser.loginName
                     }
                 });
             }
@@ -59,7 +60,7 @@ registerUser = async (req, res) => {
                     errorMessage: "Please enter the same password twice."
                 })
         }
-        const existingUser = await User.findOne({ email: email });
+        let existingUser = await User.findOne({ email: email });
         if (existingUser) {
             return res
                 .status(400)
@@ -118,7 +119,7 @@ loginUser = async (req, res) => {
                 .json({errorMessage: "Please enter all required fields."});
         }
 
-        const existingUser = await User.findOne({email: user});
+        let existingUser = await User.findOne({email: user});
         if(!existingUser)
             existingUser = await User.findOne({loginName: user})
         if(!existingUser) {
@@ -148,7 +149,8 @@ loginUser = async (req, res) => {
                     user: {
                         firstName: existingUser.firstName,
                         lastName: existingUser.lastName,
-                        email: existingUser.email
+                        email: existingUser.email,
+                        loginName: existingUser.loginName
                     }
                 }).send();
             }

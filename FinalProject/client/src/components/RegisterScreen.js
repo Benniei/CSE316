@@ -50,7 +50,8 @@ export default function RegisterScreen() {
             lastName: formData.get('lastName'),
             email: formData.get('email'),
             password: formData.get('password'),
-            passwordVerify: formData.get('passwordVerify')
+            passwordVerify: formData.get('passwordVerify'),
+            loginName: formData.get('login')
         }, store);
     };
 
@@ -73,6 +74,16 @@ export default function RegisterScreen() {
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="login"
+                                    label="Login Name"
+                                    name="login"
+                                    autoComplete="login"
+                                />
+                            </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     autoComplete="fname"
