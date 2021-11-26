@@ -18,10 +18,15 @@ function WorkspaceScreen() {
     let editItems = "";
     let namedItem = ""
     let hehFlag = false;
-    console.log(hehFlag);
+    
+    function handleClose() {
+        store.closeCurrentList();
+    }
+
     if(store.heh){
         hehFlag = true;
     }
+
     if (store.currentList) {
         editItems = 
             <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper', padding: 0 }}>
@@ -52,6 +57,7 @@ function WorkspaceScreen() {
         }
         store.setCurrentList(listid);
     }
+
     return (
         !hehFlag ?
         <div id="top5-workspace">
@@ -79,6 +85,7 @@ function WorkspaceScreen() {
                         type="submit"
                         variant="contained"
                         style={{maxWidth: '200px', maxHeight: '100px', minWidth: '150px', minHeight: '30px'}}
+                        onClick={handleClose}
                     >
                         Save
                     </Button>
