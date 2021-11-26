@@ -1,8 +1,10 @@
-import { useContext } from 'react'
-import Top5Item from './Top5Item.js'
+import { useContext } from 'react';
+import Top5Item from './Top5Item.js';
 import List from '@mui/material/List';
-import { Typography } from '@mui/material'
-import { GlobalStoreContext } from '../store/index.js'
+import { Typography } from '@mui/material';
+import { GlobalStoreContext } from '../store/index.js';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 /*
     This React component lets us edit a loaded list, which only
     happens when we are on the proper route.
@@ -54,6 +56,29 @@ function WorkspaceScreen() {
                     <div className="item-number"><Typography variant="h3">5.</Typography></div>
                 </div>
                 {editItems}
+            </div>
+            <div>
+                <Stack
+                    direction = "row"
+                    alignItems = "right"
+                    justifyContent = "right"
+                    spacing={3}
+                    >
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        style={{maxWidth: '200px', maxHeight: '100px', minWidth: '150px', minHeight: '30px'}}
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        style={{maxWidth: '200px', maxHeight: '100px', minWidth: '150px', minHeight: '30px'}}
+                    >
+                        Publish
+                    </Button>
+                </Stack>
             </div>
         </div>
         :

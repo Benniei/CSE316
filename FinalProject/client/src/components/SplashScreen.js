@@ -1,9 +1,21 @@
+import * as React from 'react';
+import { useContext } from 'react';
+import AuthContext from '../auth';
+import { GlobalStoreContext } from '../store';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+
 
 export default function SplashScreen() {
+    const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
+
+    function loginGuest(){
+        auth.loginGuest(store);
+    }
+    
     return (
         <div id="splash-screen">
             The Top 5<br />
@@ -50,6 +62,7 @@ export default function SplashScreen() {
                         type="submit"
                         variant="contained"
                         style={{maxWidth: '300px', maxHeight: '100px', minWidth: '200px', minHeight: '30px'}}
+                        onClick={loginGuest}
                     >
                         View as Guest
                     </Button>

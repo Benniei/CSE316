@@ -2,8 +2,6 @@ import { createContext, useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
-import MoveItem_Transaction from '../transactions/MoveItem_Transaction'
-import UpdateItem_Transaction from '../transactions/UpdateItem_Transaction'
 import AuthContext from '../auth'
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -44,7 +42,6 @@ function GlobalStoreContextProvider(props) {
         listNameActive: false,
         itemActive: false,
         listMarkedForDeletion: null,
-        status: [false, false, false],
         heh: false
     });
     const history = useHistory();
@@ -66,7 +63,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh: false
                 });
             }
@@ -79,7 +75,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh: false
                 })
             }
@@ -92,7 +87,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh:false
                 })
             }
@@ -105,7 +99,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh:false
                 });
             }
@@ -118,7 +111,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: payload,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh: false
                 });
             }
@@ -131,7 +123,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh: false
                 });
             }
@@ -144,7 +135,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [tps.hasTransactionToUndo(), tps.hasTransactionToRedo(), false],
                     heh: false
                 });
             }
@@ -157,7 +147,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: true,
                     listMarkedForDeletion: null,
-                    status: [false, false, false],
                     heh: false
                 });
             }
@@ -170,7 +159,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: true,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [false, false, true],
                     heh: false
                 });
             }
@@ -182,7 +170,6 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    status: [false, false, false],
                     heh: true
                 })
             }
@@ -269,10 +256,12 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    // TODO store.loadCommunityList = async function () {}
+
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
         let payload = {
-            ownerEmail: auth.user.email
+            loginName: auth.user.loginName
         };
         const response = await api.getTop5ListPairs(payload);
         if (response.data.success) {
@@ -330,18 +319,13 @@ function GlobalStoreContextProvider(props) {
     store.setCurrentList = async function (id) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
-            if(response.data.top5List){
-                let top5List = response.data.top5List;
-                response = await api.updateTop5ListById(top5List._id, top5List);
-                if (response.data.success) {
-                    storeReducer({
-                        type: GlobalStoreActionType.SET_CURRENT_LIST,
-                        payload: top5List
-                    });
-                    history.push("/top5list/" + top5List._id);
-                }
-            }
-        }
+            let top5List = response.data.top5List;
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: top5List
+            });
+            history.push("/top5list/" + top5List._id);
+    }
         else{
             storeReducer({
                 type: GlobalStoreActionType.LIST_NOT_FOUND,
@@ -350,38 +334,6 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.addMoveItemTransaction = function (start, end) {
-        let transaction = new MoveItem_Transaction(store, start, end);
-        tps.addTransaction(transaction);
-    }
-
-    store.addUpdateItemTransaction = function (index, newText) {
-        let oldText = store.currentList.items[index];
-        let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
-        tps.addTransaction(transaction);
-    }
-
-    store.moveItem = function (start, end) {
-        start -= 1;
-        end -= 1;
-        if (start < end) {
-            let temp = store.currentList.items[start];
-            for (let i = start; i < end; i++) {
-                store.currentList.items[i] = store.currentList.items[i + 1];
-            }
-            store.currentList.items[end] = temp;
-        }
-        else if (start > end) {
-            let temp = store.currentList.items[start];
-            for (let i = start; i > end; i--) {
-                store.currentList.items[i] = store.currentList.items[i - 1];
-            }
-            store.currentList.items[end] = temp;
-        }
-
-        // NOW MAKE IT OFFICIAL
-        store.updateCurrentList();
-    }
 
     store.updateItem = function (index, newItem) {
         store.currentList.items[index] = newItem;
@@ -397,23 +349,7 @@ function GlobalStoreContextProvider(props) {
             });
         }
     }
-
-    store.undo = function () {
-        tps.undoTransaction();
-    }
-
-    store.redo = function () {
-        tps.doTransaction();
-    }
-
-    store.canUndo = function() {
-        return tps.hasTransactionToUndo();
-    }
-
-    store.canRedo = function() {
-        return tps.hasTransactionToRedo();
-    }
-
+    
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {
         storeReducer({

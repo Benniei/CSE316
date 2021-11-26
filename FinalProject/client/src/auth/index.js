@@ -84,6 +84,11 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.loginGuest = async function(store) {
+        history.push("/");
+        store.loadIdNamePairs();
+    }
+
     auth.getLoggedIn = async function () {
         const response = await api.getLoggedIn();
         if(response){

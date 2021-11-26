@@ -35,7 +35,6 @@ const App = () => {
                         <Route path="/login/" exact component={SignInSide} />
                         <Route path="/top5list/:id" exact component={WorkspaceScreen} />
                     </Switch>
-                    <Statusbar />
                 </GlobalStoreContextProvider>
             </AuthContextProvider>
         </BrowserRouter>

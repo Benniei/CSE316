@@ -34,6 +34,7 @@ createTop5List = (req, res) => {
 
 updateTop5List = async (req, res) => {
     const body = req.body
+    console.log(body);
     console.log("updateTop5List: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
@@ -41,7 +42,6 @@ updateTop5List = async (req, res) => {
             error: 'You must provide a body to update',
         })
     }
-
     Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
         console.log("top5List found: " + JSON.stringify(top5List));
         if (err) {
@@ -51,7 +51,7 @@ updateTop5List = async (req, res) => {
             })
         }
         
-        // ! update the likes dislikes using here
+        // * update the likes dislikes using here
         // Normal list update
         if(body.name != null && body.items != null){
             top5List.name = body.name
@@ -69,7 +69,8 @@ updateTop5List = async (req, res) => {
             else
                 top5List.dislikes = 1;
         }
-        if(body.comments != null) {
+        
+        if(body.comments.length > 0) {
             top5List.comments.push(body.comments)
         }
         top5List
