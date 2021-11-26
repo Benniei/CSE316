@@ -9,6 +9,7 @@ import Top5Item from './Top5Item'
 import WorkspaceScreen from './WorkspaceScreen'
 import SignInSide from './SignInSide'
 import DeleteModal from './DeleteModal'
+import NameItem from './NameItem'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -24,6 +25,7 @@ export {
     SignInSide,
     SplashScreen,
     Statusbar, 
-    Top5Item, 
+    Top5Item,
+    NameItem, 
     WorkspaceScreen,
     DeleteModal}

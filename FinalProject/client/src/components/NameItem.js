@@ -6,10 +6,9 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 /*
-    This React component represents a single item in our
+    This React component represents a single name in our
     Top 5 List, which can be edited or moved around.
-    
-    @author McKilla Gorilla
+
 */
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -23,9 +22,9 @@ function Top5Item(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
+            let id = store.currentList._id;
             if(text)
-                store.updateItem(index, text);
+                store.changeListName(id, text);;
             toggleEdit();
         }
     }
@@ -42,12 +41,10 @@ function Top5Item(props) {
         setText(event.target.value);
     }
 
-    let { index } = props;
-
     let itemClass = "top5-item";
 
     let cardElement = <ListItem
-                id={'item-' + (index+1)}
+                id={'listname'}
                 key={props.key}
                 className={itemClass}
                 sx={{ display: 'flex', p: 1 }}
@@ -69,7 +66,7 @@ function Top5Item(props) {
             <TextField
                 required
                 fullWidth
-                id={"item-" + (index + 1)}
+                id={"item-name"}
                 label="Item Name"
                 name="name"
                 autoComplete="Item Name"

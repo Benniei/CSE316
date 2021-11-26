@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import jsTPS from '../common/jsTPS'
 import api from '../api'
 import AuthContext from '../auth'
 /*
@@ -27,9 +26,6 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     LIST_NOT_FOUND: "LIST_NOT_FOUND"
 }
-
-// WE'LL NEED THIS TO PROCESS TRANSACTIONS
-const tps = new jsTPS();
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -220,8 +216,6 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
         });
-        
-        tps.clearAllTransactions();
         history.push("/");
     }
 
@@ -240,7 +234,6 @@ function GlobalStoreContextProvider(props) {
         const response = await api.createTop5List(payload);
 
         if (response.data.success) {
-            tps.clearAllTransactions();
             let newList = response.data.top5List;
             storeReducer({
                 type: GlobalStoreActionType.CREATE_NEW_LIST,

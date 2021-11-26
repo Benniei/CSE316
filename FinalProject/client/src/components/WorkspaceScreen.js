@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import Top5Item from './Top5Item.js';
+import NameItem from './NameItem'
 import List from '@mui/material/List';
 import { Typography } from '@mui/material';
 import { GlobalStoreContext } from '../store/index.js';
@@ -15,6 +16,7 @@ function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
 
     let editItems = "";
+    let namedItem = ""
     let hehFlag = false;
     console.log(hehFlag);
     if(store.heh){
@@ -22,11 +24,17 @@ function WorkspaceScreen() {
     }
     if (store.currentList) {
         editItems = 
-            <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper', padding: 0 }}>
+                {
+                    <NameItem
+                        key={'top5-item-name'}
+                        text={store.currentList.name}
+                    />
+                }
                 {
                     store.currentList.items.map((item, index) => (
                         <Top5Item 
-                            key={'top5-item-' + (index+1)}
+                            key={'top5-item-' + (index)}
                             text={item}
                             index={index} 
                         />
@@ -47,8 +55,10 @@ function WorkspaceScreen() {
     return (
         !hehFlag ?
         <div id="top5-workspace">
+            
             <div id="workspace-edit">
                 <div id="edit-numbering">
+                    <div className="item-number"><Typography variant="h3">Name:</Typography></div>
                     <div className="item-number"><Typography variant="h3">1.</Typography></div>
                     <div className="item-number"><Typography variant="h3">2.</Typography></div>
                     <div className="item-number"><Typography variant="h3">3.</Typography></div>
@@ -63,6 +73,7 @@ function WorkspaceScreen() {
                     alignItems = "right"
                     justifyContent = "right"
                     spacing={3}
+                    pr={2}
                     >
                     <Button
                         type="submit"

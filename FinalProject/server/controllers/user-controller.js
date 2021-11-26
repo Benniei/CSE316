@@ -25,7 +25,7 @@ getLoggedIn = async (req, res) => {
                         firstName: loggedInUser.firstName,
                         lastName: loggedInUser.lastName,
                         email: loggedInUser.email,
-                        loginName: savedUser.loginName
+                        loginName: loggedInUser.loginName
                     }
                 });
             }
