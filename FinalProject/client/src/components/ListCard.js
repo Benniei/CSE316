@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
@@ -15,7 +14,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(false);
     const { idNamePair } = props;
 
     function handleLoadList(event, id) {
@@ -24,7 +22,6 @@ function ListCard(props) {
             store.setCurrentList(id);
         }
     }
-
 
     async function handleDeleteList(event, id) {
         event.stopPropagation();
@@ -56,23 +53,6 @@ function ListCard(props) {
                 </Box>
         </ListItem>
 
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Top 5 List Name"
-                name="name"
-                autoComplete="Top 5 List Name"
-                className='list-card'
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />
-    }
     return (
         cardElement
     );

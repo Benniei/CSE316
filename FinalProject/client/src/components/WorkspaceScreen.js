@@ -16,7 +16,6 @@ function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
 
     let editItems = "";
-    let namedItem = ""
     let hehFlag = false;
     
     function handleClose() {
