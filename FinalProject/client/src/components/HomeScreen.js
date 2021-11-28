@@ -1,8 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
-import { Fab, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import DeleteModal from './DeleteModal.js';
 /*
@@ -17,9 +15,7 @@ const HomeScreen = () => {
         store.loadIdNamePairs();
     }, []);
 
-    function handleCreateNewList() {
-        store.createNewList();
-    }
+    
     let listCard = "";
     if (store) {
         listCard = 
@@ -37,17 +33,6 @@ const HomeScreen = () => {
     }
     return (
         <div id="top5-list-selector">
-            <div id="list-selector-heading">
-            <Fab 
-                color="primary" 
-                aria-label="add"
-                id="add-list-button"
-                onClick={handleCreateNewList}
-            >
-                <AddIcon />
-            </Fab>
-                <Typography variant="h2">Your Lists</Typography>
-            </div>
             <div id="list-selector-list">
                 {
                     listCard
