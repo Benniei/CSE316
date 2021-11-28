@@ -5,8 +5,6 @@ import AuthContext from '../auth'
 /*
     This is our global data store. Note that it uses the Flux design pattern,
     which makes use of things like actions and reducers. 
-    
-    @author McKilla Gorilla
 */
 
 // THIS IS THE CONTEXT WE'LL USE TO SHARE OUR STORE
@@ -217,6 +215,18 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         });
         history.push("/");
+    }
+
+    store.publishCurrentList = async function() {
+        // Updates the list with publish date + community list
+        const response = await api.publishList(store.currentList._id, store.currentList);
+        if (response.data.success) {
+            storeReducer({
+                type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
+                payload: {}
+            });
+            history.push("/");
+        }
     }
 
    

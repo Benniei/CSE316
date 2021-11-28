@@ -17,13 +17,22 @@ function WorkspaceScreen() {
 
     let editItems = "";
     let hehFlag = false;
-    
+    let canPublish = false;
+
     function handleClose() {
         store.closeCurrentList();
     }
 
+    function handlePublish() {
+        store.publishCurrentList();
+    }
+
     if(store.heh){
         hehFlag = true;
+    }
+
+    function checkIfDuplicateExists(arr) {
+        return new Set(arr).size !== arr.length
     }
 
     if (store.currentList) {
@@ -45,6 +54,20 @@ function WorkspaceScreen() {
                     ))
                 }
             </List>;
+        let currList = store.currentList.items;
+        // Checks for empty items in the list
+        if(!currList.includes("?")){
+            canPublish = true;
+            if(!checkIfDuplicateExists(currList)){
+                canPublish = true;
+            }
+            else{
+                canPublish = false;
+            }
+        }
+        // Checks if any of the Items are repeats
+        
+        // TODO Check for list name
     }
     else if (hehFlag === false){
         let url = document.URL;
@@ -92,6 +115,8 @@ function WorkspaceScreen() {
                         type="submit"
                         variant="contained"
                         style={{maxWidth: '200px', maxHeight: '100px', minWidth: '150px', minHeight: '30px'}}
+                        disabled={!canPublish}
+                        onClick={handlePublish}
                     >
                         Publish
                     </Button>

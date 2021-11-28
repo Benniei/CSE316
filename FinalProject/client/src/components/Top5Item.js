@@ -22,7 +22,7 @@ function Top5Item(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             if(text)
-                store.updateItem(index, text);
+                store.updateItem(index, text.trim());
             toggleEdit();
         }
     }

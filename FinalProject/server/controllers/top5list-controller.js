@@ -56,33 +56,37 @@ updateTop5List = async (req, res) => {
 
         // TODO update the views using here
         // Normal list update
-        if(body.name != null && body.items != null){
-            top5List.name = body.name
-            top5List.items = body.items
-        }
-        if(body.likes != null){
-            if(top5List.likes)
-                top5List.likes.push(body.likes);
-            else{
-                top5List.likes = [body.likes];
+        if(body._id){
+            if(body.name != null && body.items != null){
+                top5List.name = body.name
+                top5List.items = body.items
             }
         }
-        if(body.dislikes != null) {
-            if(top5List.dislikes)
-                top5List.dislikes.push(body.dislikes);
-            else{
-                top5List.dislikes = [body.dislikes];
+        else{
+            if(body.likes != null){
+                if(top5List.likes)
+                    top5List.likes.push(body.likes);
+                else{
+                    top5List.likes = [body.likes];
+                }
             }
-        }
-        if(body.views != null) {
-            if(top5List.views)
-                top5List.views = top5List.views + 1;
-            else
-                top5List.views = 1;
-        }
-        if(body.comments){
-            if(body.comments.length > 0) {
-                top5List.comments.push(body.comments)
+            if(body.dislikes != null) {
+                if(top5List.dislikes)
+                    top5List.dislikes.push(body.dislikes);
+                else{
+                    top5List.dislikes = [body.dislikes];
+                }
+            }
+            if(body.views != null) {
+                if(top5List.views)
+                    top5List.views = top5List.views + 1;
+                else
+                    top5List.views = 1;
+            }
+            if(body.comments){
+                if(body.comments.length > 0) {
+                    top5List.comments.push(body.comments)
+                }
             }
         }
 
