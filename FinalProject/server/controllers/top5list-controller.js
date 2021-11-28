@@ -1,4 +1,7 @@
 const Top5List = require('../models/top5list-model');
+const {ObjectID} = require('mongodb');
+let object = new ObjectID();
+
 
 createTop5List = (req, res) => {
     const body = req.body;
@@ -50,8 +53,8 @@ updateTop5List = async (req, res) => {
                 message: 'Top 5 List not found!',
             })
         }
-        
-        // * update the likes dislikes using here
+
+        // TODO update the views using here
         // Normal list update
         if(body.name != null && body.items != null){
             top5List.name = body.name
@@ -59,20 +62,30 @@ updateTop5List = async (req, res) => {
         }
         if(body.likes != null){
             if(top5List.likes)
-                top5List.likes = top5List.likes + 1;
-            else
-                top5List.likes = 1;
+                top5List.likes.push(body.likes);
+            else{
+                top5List.likes = [body.likes];
+            }
         }
         if(body.dislikes != null) {
             if(top5List.dislikes)
-                top5List.dislikes = top5List.dislikes + 1;
+                top5List.dislikes.push(body.dislikes);
+            else{
+                top5List.dislikes = [body.dislikes];
+            }
+        }
+        if(body.views != null) {
+            if(top5List.views)
+                top5List.views = top5List.views + 1;
             else
-                top5List.dislikes = 1;
+                top5List.views = 1;
         }
-        
-        if(body.comments.length > 0) {
-            top5List.comments.push(body.comments)
+        if(body.comments){
+            if(body.comments.length > 0) {
+                top5List.comments.push(body.comments)
+            }
         }
+
         top5List
                 .save()
                 .then(() => {
@@ -116,6 +129,7 @@ getTop5ListById = async (req, res) => {
         return res.status(200).json({ success: true, top5List: list })
     }).catch(err => console.log(err))
 }
+
 getTop5Lists = async (req, res) => {
     await Top5List.find({}, (err, top5Lists) => {
         if (err) {
@@ -129,6 +143,7 @@ getTop5Lists = async (req, res) => {
         return res.status(200).json({ success: true, data: top5Lists })
     }).catch(err => console.log(err))
 }
+
 getTop5ListPairs = async (req, res) => {
     const body = req.body
     await Top5List.find({ }, (err, top5Lists) => {
@@ -173,11 +188,55 @@ getTop5ListPairs = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+/** Additional Functions */
+
+publishList = async (req, res) => {
+    const body = req.body
+    console.log(body);
+    console.log("publishTop5List: " + JSON.stringify(body));
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+    Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
+        console.log("top5List found for publishing: " + JSON.stringify(top5List));
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Top 5 List not found!',
+            })
+        }
+        top5List.publishedDate = object.getTimestamp();
+        
+        top5List
+                .save()
+                .then(() => {
+                    console.log("SUCCESS!!!");
+                    return res.status(200).json({
+                        success: true,
+                        id: top5List._id,
+                        message: 'Top 5 List updated!',
+                    })
+                })
+                .catch(error => {
+                    console.log("FAILURE: " + JSON.stringify(error));
+                    return res.status(404).json({
+                        error,
+                        message: 'Top 5 List not updated!',
+                    })
+                })
+
+    })
+}
+
 module.exports = {
     createTop5List,
     updateTop5List,
     deleteTop5List,
     getTop5Lists,
     getTop5ListPairs,
-    getTop5ListById
+    getTop5ListById,
+    publishList
 }
