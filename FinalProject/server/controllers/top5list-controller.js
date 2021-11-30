@@ -37,7 +37,6 @@ createTop5List = (req, res) => {
 
 updateTop5List = async (req, res) => {
     const body = req.body
-    console.log(body);
     console.log("updateTop5List: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
@@ -196,7 +195,6 @@ getTop5ListPairs = async (req, res) => {
 
 publishList = async (req, res) => {
     const body = req.body
-    console.log(body);
     console.log("publishTop5List: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
@@ -204,7 +202,7 @@ publishList = async (req, res) => {
             error: 'You must provide a body to update',
         })
     }
-    Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
+    Top5List.findById({ _id: body.id }, (err, top5List) => {
         console.log("top5List found for publishing: " + JSON.stringify(top5List));
         if (err) {
             return res.status(404).json({
@@ -213,7 +211,7 @@ publishList = async (req, res) => {
             })
         }
         top5List.publishedDate = object.getTimestamp();
-        
+        top5List.published = true;
         top5List
                 .save()
                 .then(() => {
@@ -235,6 +233,18 @@ publishList = async (req, res) => {
     })
 }
 
+getTop5ListExist = async (req, res) => {
+    const body = req.body;
+    await Top5List.find({ name: body.listName, loginName: body.user, published: true }, (err, list) => {
+        if (err || list.length === 0) {
+            console.log("DID NOT FIND ONE _______")
+            return res.status(400).json({ success: false, error: err });
+        }
+        console.log("FOUND ONE ______________");
+        return res.status(200).json({ success: true, top5List: list })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     createTop5List,
     updateTop5List,
@@ -242,5 +252,6 @@ module.exports = {
     getTop5Lists,
     getTop5ListPairs,
     getTop5ListById,
+    getTop5ListExist,
     publishList
 }

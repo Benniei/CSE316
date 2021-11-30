@@ -35,7 +35,14 @@ export const getTop5ListById = (id) => api.get(`/top5list/${id}`)
 .catch(error => {
    return error.response;
 });
-export const publishList = (id, payload) => api.put(`/top5listpublish/${id}`, payload)
+export const publishList = (payload) => api.put(`/top5listpublish`, payload)
+export const getTop5ListExist = (payload) => api.post('/top5listexist', payload)
+.then(response => {
+   return response
+})
+.catch(error => {
+   return error.response;
+});
 
 
 /** Authentication */
@@ -75,6 +82,7 @@ const apis = {
    updateTop5ListById,
    deleteTop5ListById,
    getTop5ListById,
+   getTop5ListExist,
    publishList,
    getLoggedIn,
    registerUser,

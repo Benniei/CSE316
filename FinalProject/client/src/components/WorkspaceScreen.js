@@ -4,6 +4,7 @@ import NameItem from './NameItem'
 import List from '@mui/material/List';
 import { Typography } from '@mui/material';
 import { GlobalStoreContext } from '../store/index.js';
+import AuthContext from '../auth';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 /*
@@ -56,18 +57,18 @@ function WorkspaceScreen() {
             </List>;
         let currList = store.currentList.items;
         // Checks for empty items in the list
-        if(!currList.includes("?")){
-            canPublish = true;
-            if(!checkIfDuplicateExists(currList)){
-                canPublish = true;
-            }
-            else{
-                canPublish = false;
+        if(store.publish){
+            if(!currList.includes("?")){
+                // Checks if any of the Items are repeats
+                if(!checkIfDuplicateExists(currList)){
+                    // TODO Check for list name
+                    canPublish = true;
+                }
+                else{
+                    canPublish = false;
+                }
             }
         }
-        // Checks if any of the Items are repeats
-        
-        // TODO Check for list name
     }
     else if (hehFlag === false){
         let url = document.URL;
