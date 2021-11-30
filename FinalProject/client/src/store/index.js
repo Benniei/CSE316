@@ -410,7 +410,10 @@ function GlobalStoreContextProvider(props) {
         if (response.data.success) {
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_LIST,
-                payload: store.currentList
+                payload: {
+                    list: store.currentList,
+                    publish: store.publish
+                }
             });
         }
     }
