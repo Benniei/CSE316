@@ -212,6 +212,47 @@ publishList = async (req, res) => {
         }
         top5List.publishedDate = object.getTimestamp();
         top5List.published = true;
+            
+        // Update Community List
+        Top5List.findOne({community: true, name: top5List.name}, (err, list) => {
+            if(err || list == null) {
+                console.log("Create New Community List");
+                const newList = {
+                    name: top5List.name,
+                    community: true,
+                    items: [],
+                    itemSort: [],
+                    comments: [],
+                    likes: [],
+                    dislikes: []
+                }
+                list = new Top5List(newList);
+            }
+            else{
+                console.log("Found Community List");
+            }
+            for(let i = 0; i < top5List.items.length; i++){
+                let score = 5 - i;
+                let obj = list.itemSort.find(x => x.name === top5List.items[i])
+                if(obj){
+                    obj.score = obj.score + score;
+                } else{
+                    list.itemSort.push({name: top5List.items[i], score: score})
+                }
+            }
+            list.itemSort.sort((a, b) => {
+                return b.score - a.score
+            });
+            list.items = [];
+            for(let i = 0; i < 5; i++){
+                list.items.push(list.itemSort[i].name);
+            }
+            console.log(list.items);
+            console.log("Update Community List: " + JSON.stringify(list));
+            list.save()
+        })
+
+        // Send back feeback
         top5List
                 .save()
                 .then(() => {
@@ -229,7 +270,6 @@ publishList = async (req, res) => {
                         message: 'Top 5 List not updated!',
                     })
                 })
-
     })
 }
 
@@ -237,10 +277,8 @@ getTop5ListExist = async (req, res) => {
     const body = req.body;
     await Top5List.find({ name: body.listName, loginName: body.user, published: true }, (err, list) => {
         if (err || list.length === 0) {
-            console.log("DID NOT FIND ONE _______")
             return res.status(400).json({ success: false, error: err });
         }
-        console.log("FOUND ONE ______________");
         return res.status(200).json({ success: true, top5List: list })
     }).catch(err => console.log(err))
 }
