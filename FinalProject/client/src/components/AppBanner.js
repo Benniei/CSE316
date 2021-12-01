@@ -33,7 +33,7 @@ export default function AppBanner() {
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'right',
             }}
             id={menuId}
@@ -53,7 +53,7 @@ export default function AppBanner() {
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'right',
             }}
             id={menuId}
@@ -115,12 +115,13 @@ export default function AppBanner() {
                                 aria-haspopup="true"
                                 onClick={handleProfileMenuOpen}
                                 color="inherit"
+                                sx={{border: "2px black solid", backgroundColor:"#757ce8"}}
                             >
                                 <Typography                        
-                                    variant="h4"
+                                    variant="body1"
                                     noWrap
                                     component="div"
-                                    sx={{ display: { xs: 'none', sm: 'block'}}}                        
+                                    sx={{ display: { xs: 'none', sm: 'block', color:"#000000"}}}                        
                                 >
                                     {initials} 
                                 </Typography>
