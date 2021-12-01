@@ -168,13 +168,15 @@ getTop5ListPairs = async (req, res) => {
                     _id: list._id,
                     name: list.name,
                     loginName: list.loginName,
-                    community: list.community
+                    community: list.community,
+                    published: list.published
                 };
                 
                 // ! pruning results to fit the body
                 
                 
                 if(body.community != null && pair.community === body.community) {
+                    // Query for Community List
                     pairs.push(pair);
                 }
                 else{
