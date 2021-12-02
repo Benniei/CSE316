@@ -13,12 +13,14 @@ import FunctionsOutlinedIcon from '@mui/icons-material/FunctionsOutlined';
 import SortIcon from '@mui/icons-material/Sort';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
-import { pink } from '@mui/material/colors';
-
+import { GlobalStoreContext } from '../store';
+import AuthContext from '../auth';
 
 export default function SearchBanner(){
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+    const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -28,6 +30,40 @@ export default function SearchBanner(){
         setAnchorEl(null);
     };
 
+    const handleHome = () => {
+        let payload = {
+            loginName: auth.user.loginName,
+            homeState: 1
+        };
+        store.loadIdNamePairs(payload);
+    }
+
+    const handleAllList = () => {
+        let payload = {
+            published: true,
+            homeState: 2
+        };
+        store.loadIdNamePairs(payload);
+    }
+    
+    const handleUserList = () => {
+        let payload = {
+            published: true,
+            homeState: 3
+        };
+        store.loadIdNamePairs(payload);
+    }
+
+    const handleCommunityList = () => {
+        let payload = {
+            community: true,
+            homeState: 4
+        };
+        store.loadIdNamePairs(payload);
+    }
+
+    const currentState = store.homeState;
+    console.log(currentState);
     const sortMenu = (<Menu
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -61,8 +97,13 @@ export default function SearchBanner(){
                                 aria-label="homeList"
                                 aria-haspopup="true"
                                 color="inherit"
+                                onClick={handleHome}
                             >
-                              <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000' }}/>  
+                            {(currentState === 1)?
+                            <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000', border: "2px solid green"}}/>
+                            :
+                            <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000' }}/>
+                            }
                         </IconButton>
                         <IconButton
                                 size="large"
@@ -70,8 +111,13 @@ export default function SearchBanner(){
                                 aria-label="homeList"
                                 aria-haspopup="true"
                                 color="inherit"
+                                onClick={handleAllList}
                             >
-                              <GroupsOutlinedIcon sx={{ fontSize: 35, color: '#000000'  }}/>  
+                            {(currentState === 2)?
+                            <GroupsOutlinedIcon sx={{ fontSize: 35, color: '#000000', border: "2px solid green"}}/>  
+                            :
+                            <GroupsOutlinedIcon sx={{ fontSize: 35, color: '#000000'  }}/>
+                            }
                         </IconButton>
                         <IconButton
                                 size="large"
@@ -79,8 +125,13 @@ export default function SearchBanner(){
                                 aria-label="homeList"
                                 aria-haspopup="true"
                                 color="inherit"
+                                onClick={handleUserList}
                             >
-                              <PersonOutlineOutlinedIcon sx={{ fontSize: 35, color: '#000000'}}/>  
+                            {(currentState === 3)?
+                            <PersonOutlineOutlinedIcon sx={{ fontSize: 35, color: '#000000', border: "2px solid green"}}/>  
+                            :
+                            <PersonOutlineOutlinedIcon sx={{ fontSize: 35, color: '#000000'}}/>
+                            } 
                         </IconButton>
                         <IconButton
                                 size="large"
@@ -88,8 +139,13 @@ export default function SearchBanner(){
                                 aria-label="homeList"
                                 aria-haspopup="true"
                                 color="inherit"
+                                onClick={handleCommunityList}
                             >
-                              <FunctionsOutlinedIcon sx={{ fontSize: 35, color: '#000000'}}/>  
+                            {(currentState === 4)?
+                            <FunctionsOutlinedIcon sx={{ fontSize: 35, color: '#000000', border: "2px solid green"}}/>  
+                            :
+                            <FunctionsOutlinedIcon sx={{ fontSize: 35, color: '#000000'}}/>
+                            }  
                         </IconButton>
                         <Grid item xs={12} sm={6} pl={3}>
                             <TextField   

@@ -174,7 +174,6 @@ getTop5ListPairs = async (req, res) => {
                 
                 // ! pruning results to fit the body
                 
-                
                 if(body.community != null && pair.community === body.community) {
                     // Query for Community List
                     pairs.push(pair);
@@ -216,11 +215,12 @@ publishList = async (req, res) => {
         top5List.published = true;
             
         // Update Community List
-        Top5List.findOne({community: true, name: top5List.name}, (err, list) => {
+        let top5Name = top5List.name.toLowerCase();
+        Top5List.findOne({community: true, name: top5Name}, (err, list) => {
             if(err || list == null) {
                 console.log("Create New Community List");
                 const newList = {
-                    name: top5List.name,
+                    name: top5Name,
                     community: true,
                     items: [],
                     itemSort: [],

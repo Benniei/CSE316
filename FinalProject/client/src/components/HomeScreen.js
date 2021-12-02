@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react'
-import { GlobalStoreContext } from '../store'
-import ListCard from './ListCard.js'
+import React, { useContext, useEffect } from 'react';
+import { GlobalStoreContext } from '../store';
+import ListCard from './ListCard.js';
 import List from '@mui/material/List';
 import DeleteModal from './DeleteModal.js';
-import SearchBanner from './SearchBanner.js'
+import SearchBanner from './SearchBanner.js';
+import AuthContext from '../auth';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -11,14 +12,19 @@ import SearchBanner from './SearchBanner.js'
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
 
     useEffect(() => {
-        store.loadIdNamePairs();
+        let payload = {
+            loginName: auth.user.loginName,
+            homeState: 1
+        };
+        store.loadIdNamePairs(payload);
     }, []);
 
     
     let listCard = "";
-    if (store) {
+    if (store.idNamePairs) {
         listCard = 
             <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
             {

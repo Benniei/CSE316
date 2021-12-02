@@ -47,9 +47,16 @@ function WorkspaceScreen() {
                 }
                 {
                     store.currentList.items.map((item, index) => (
+                        (item !== "?")?
                         <Top5Item 
                             key={'top5-item-' + (index)}
                             text={item}
+                            index={index} 
+                        />
+                        :
+                        <Top5Item 
+                            key={'top5-item-' + (index)}
+                            text={""}
                             index={index} 
                         />
                     ))

@@ -39,7 +39,8 @@ function GlobalStoreContextProvider(props) {
         itemActive: false,
         listMarkedForDeletion: null,
         heh: false,
-        publish: false
+        publish: false,
+        homeState: 0
     });
     const history = useHistory();
 
@@ -61,7 +62,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: payload.publish
+                    publish: payload.publish,
+                    homeState: store.homeState
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -74,7 +76,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: 1 // goes to home
                 })
             }
             // CREATE A NEW LIST
@@ -87,20 +90,22 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh:false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: store.homeState
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
-                    idNamePairs: payload,
+                    idNamePairs: payload.arr,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh:false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: payload.homeState
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -113,7 +118,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: payload,
                     heh: false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: store.homeState
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -126,7 +132,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: store.homeState
                 });
             }
             // UPDATE A LIST
@@ -139,7 +146,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: payload.publish
+                    publish: payload.publish,
+                    homeState: 0
                 });
             }
             // START EDITING A LIST ITEM
@@ -152,7 +160,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: true,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: store.homeState
                 });
             }
             // START EDITING A LIST NAME
@@ -165,7 +174,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: store.homeState
                 });
             }
             case GlobalStoreActionType.LIST_NOT_FOUND: {
@@ -177,7 +187,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: true,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: store.homeState
                 })
             }
             case GlobalStoreActionType.FINISH_PUBLISH: {
@@ -189,7 +200,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     heh: false,
-                    publish: store.publish
+                    publish: store.publish,
+                    homeState: 1
                 })
             }
             default:
@@ -297,19 +309,18 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    // TODO store.loadCommunityList = async function () {}
-
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
-    store.loadIdNamePairs = async function () {
-        let payload = {
-            loginName: auth.user.loginName
-        };
-        const response = await api.getTop5ListPairs(payload);
+    store.loadIdNamePairs = async function (query) {
+        console.log(query);
+        const response = await api.getTop5ListPairs(query);
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: pairsArray
+                payload: {
+                    arr: pairsArray,
+                    homeState: query.homeState
+                }
             });
         }
         else {
@@ -322,7 +333,6 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
     // showDeleteListModal, and hideDeleteListModal
     store.markListForDeletion = async function (id) {
-
         // GET THE LIST
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
