@@ -342,10 +342,24 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    function arrayRemove(arr, value) { 
+        return arr.filter(function(ele){ 
+            return ele._id != value; 
+        });
+    }
+
     store.deleteList = async function (listToDelete) {
         let response = await api.deleteTop5ListById(listToDelete._id);
         if (response.data.success) {
-            store.loadIdNamePairs();
+            let arr = arrayRemove(store.idNamePairs, listToDelete._id);
+            console.log(arr);
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: {
+                    arr: arr,
+                    homeState: store.homeState
+                }
+            });
             history.push("/");
         }
     }

@@ -111,7 +111,6 @@ updateTop5List = async (req, res) => {
 }
 
 function arrayRemove(arr, value) { 
-    
     return arr.filter(function(ele){ 
         return ele != value; 
     });
@@ -129,19 +128,23 @@ deleteTop5List = async (req, res) => {
         if(top5List.published){
             let top5Name = top5List.name.toLowerCase();
             Top5List.findOne({community: true, name: top5Name}, (err, list) => {
+                if(err || list == null){
+                    return;
+                }
                 for(let i = 0; i < top5List.items.length; i++){
                     let score = 5 - i;
                     let obj = list.itemSort.find(x => x.name === top5List.items[i])
                     if(obj){
                         obj.score = obj.score - score;
                         if(obj.score == 0){
-                            list = arrayRemove(list, obj);
+                            list.itemSort = arrayRemove(list.itemSort, obj);
                         }
+                        console.log(obj.name + "---->" + obj.score);
                     } else{
                         console.log("error item not found");
                     }
                 }
-                if(list.length > 0){
+                if(list.itemSort.length > 0){
                     list.itemSort.sort((a, b) => {
                         return b.score - a.score
                     });

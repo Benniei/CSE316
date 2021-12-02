@@ -12,7 +12,8 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGIN_ERROR: "LOGIN_ERROR",
     LOGOUT: "LOGOUT",
-    CLOSE_MODAL: "CLOSE_MODAL"
+    CLOSE_MODAL: "CLOSE_MODAL",
+    GUEST_IN: "GUEST_IN"
 }
 
 function AuthContextProvider(props) {
@@ -20,7 +21,8 @@ function AuthContextProvider(props) {
         user: null,
         loggedIn: false,
         modal: false,
-        message: null
+        message: null,
+        guest: false
     });
     const history = useHistory();
 
@@ -36,7 +38,8 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: payload.loggedIn,
                     modal: false,
-                    message: null
+                    message: null,
+                    guest: false
                 });
             }
             case AuthActionType.REGISTER_USER: {
@@ -44,7 +47,8 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: true,
                     modal: false,
-                    message: null
+                    message: null,
+                    guest: false
                 })
             }
             case AuthActionType.LOGIN_USER: {
@@ -52,7 +56,8 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: true,
                     modal: false,
-                    message: null
+                    message: null,
+                    guest: false
                 })
             }
             case AuthActionType.LOGIN_ERROR: {
@@ -60,7 +65,8 @@ function AuthContextProvider(props) {
                     user: null,
                     loggedIn: false,
                     modal: true,
-                    message: payload.errorMessage
+                    message: payload.errorMessage,
+                    guest: false
                 })
             }
             case AuthActionType.LOGOUT: {
@@ -68,7 +74,8 @@ function AuthContextProvider(props) {
                     user: null,
                     loggedIn: false,
                     modal: false,
-                    message: null
+                    message: null,
+                    guest: false
                 })
             }
             case AuthActionType.CLOSE_MODAL: {
@@ -76,7 +83,17 @@ function AuthContextProvider(props) {
                     user: null,
                     loggedIn: false,
                     modal: false,
-                    message: null
+                    message: null,
+                    guest: false
+                })
+            }
+            case AuthActionType.GUEST_IN: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    modal: false,
+                    message: null,
+                    guest: true
                 })
             }
             default:
@@ -86,7 +103,11 @@ function AuthContextProvider(props) {
 
     auth.loginGuest = async function(store) {
         history.push("/");
-        store.loadIdNamePairs();
+        let payload = {
+            community: true,
+            homeState: 4
+        };
+        store.loadIdNamePairs(payload);
     }
 
     auth.getLoggedIn = async function () {
@@ -116,7 +137,11 @@ function AuthContextProvider(props) {
                 })
                 history.push("/");
                 store.newListCounter = 0;
-                store.loadIdNamePairs();
+                let payload = {
+                    loginName: auth.user.loginName,
+                    homeState: 1
+                };
+                store.loadIdNamePairs(payload);
             }
             else{
                 authReducer({
@@ -139,7 +164,11 @@ function AuthContextProvider(props) {
                 })
                 history.push("/");
                 store.newListCounter = 0;
-                store.loadIdNamePairs();
+                let payload = {
+                    loginName: response.data.user.loginName,
+                    homeState: 1
+                };
+                store.loadIdNamePairs(payload);
             }
             else{
                 authReducer({
