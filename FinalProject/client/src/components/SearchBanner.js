@@ -18,6 +18,7 @@ import AuthContext from '../auth';
 
 export default function SearchBanner(){
     const [anchorEl, setAnchorEl] = useState(null);
+    const [text, setText] = useState("");
     const isMenuOpen = Boolean(anchorEl);
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
@@ -25,6 +26,10 @@ export default function SearchBanner(){
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
 
     const handleMenuClose = () => {
         setAnchorEl(null);
@@ -36,34 +41,44 @@ export default function SearchBanner(){
             homeState: 1
         };
         store.loadIdNamePairs(payload);
+        setText("");
     }
 
     const handleAllList = () => {
         let payload = {
-            published: true,
             homeState: 2
         };
         store.loadIdNamePairs(payload);
+        setText("");
     }
     
     const handleUserList = () => {
         let payload = {
-            published: true,
             homeState: 3
         };
         store.loadIdNamePairs(payload);
+        setText("");
     }
 
     const handleCommunityList = () => {
         let payload = {
-            community: true,
             homeState: 4
         };
         store.loadIdNamePairs(payload);
+        setText("");
     }
 
+    const handleSearch = (event) => {
+        event.preventDefault();
+        let payload = {
+            loginName: auth.user.loginName,
+            homeState: currentState,
+            search: text
+        };
+        store.loadIdNamePairs(payload);
+    };
+
     const currentState = store.homeState;
-    console.log(currentState);
     const sortMenu = (<Menu
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -155,6 +170,14 @@ export default function SearchBanner(){
                                 autoComplete="Search"
                                 size="large"
                                 fullWidth
+                                onChange={handleUpdateText}
+                                value={text}
+                                sx={{backgroundColor:"#FFFFFF"}}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter'){
+                                        handleSearch(event);
+                                    }
+                                }}
                             />
                         </Grid>
                     <Box sx={{ flexGrow: 1 }}></Box>

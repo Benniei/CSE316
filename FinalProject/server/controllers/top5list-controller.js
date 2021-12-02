@@ -110,12 +110,53 @@ updateTop5List = async (req, res) => {
     })
 }
 
+function arrayRemove(arr, value) { 
+    
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}
+
 deleteTop5List = async (req, res) => {
     Top5List.findById({ _id: req.params.id }, (err, top5List) => {
         if (err) {
             return res.status(404).json({
                 err,
                 message: 'Top 5 List not found!',
+            })
+        }
+        // ! Delete the community list
+        if(top5List.published){
+            let top5Name = top5List.name.toLowerCase();
+            Top5List.findOne({community: true, name: top5Name}, (err, list) => {
+                for(let i = 0; i < top5List.items.length; i++){
+                    let score = 5 - i;
+                    let obj = list.itemSort.find(x => x.name === top5List.items[i])
+                    if(obj){
+                        obj.score = obj.score - score;
+                        if(obj.score == 0){
+                            list = arrayRemove(list, obj);
+                        }
+                    } else{
+                        console.log("error item not found");
+                    }
+                }
+                if(list.length > 0){
+                    list.itemSort.sort((a, b) => {
+                        return b.score - a.score
+                    });
+                    list.items = [];
+                    for(let i = 0; i < 5; i++){
+                        list.items.push(list.itemSort[i].name);
+                    }
+                    console.log("Update Community List(Delete): " + JSON.stringify(list));
+                    list.save()     
+                }
+                else{
+                    Top5List.findOneAndDelete({ _id: list.id }, () => {
+                        console.log("Delete Community List " + list.name);
+                    }).catch(err => console.log(err))
+                }
             })
         }
         Top5List.findOneAndDelete({ _id: req.params.id }, () => {
@@ -173,18 +214,51 @@ getTop5ListPairs = async (req, res) => {
                 };
                 
                 // ! pruning results to fit the body
-                
-                if(body.community != null && pair.community === body.community) {
-                    // Query for Community List
-                    pairs.push(pair);
+                if(body.homeState === 1){
+                    if(pair.community)
+                        continue;
+                    if(body.search){
+                        if(pair.name.toLowerCase().indexOf(body.search.toLowerCase()) === 0)
+                            pairs.push(pair)
+                    }
+                    else if(pair.loginName === body.loginName)
+                        pairs.push(pair);
                 }
-                else{
-                    // Query for people list or own list
-                    if(body.loginName != null && pair.loginName === body.loginName)
+                else if(body.homeState === 2){
+                    // Search by LIST NAME
+                    if(pair.community || !pair.published)
+                        continue;
+                    if(body.search){
+                        if(pair.name.toLowerCase().indexOf(body.search.toLowerCase()) === 0)
+                            pairs.push(pair)
+                    }
+                    else if(pair.published === true){
                         pairs.push(pair);
-                    // Query by name of list that is not a part of the community list
-                    if(body.name != null && body.community == null && pair.name === body.name)
+                    }
+                }
+                else if(body.homeState === 3) {
+                    // Search by USER NAME
+                    if(pair.community || !pair.published)
+                        continue;
+                    if(body.search){
+                        if(pair.loginName.toLowerCase().indexOf(body.search.toLowerCase()) === 0)
+                            pairs.push(pair)
+                    }
+                    else if(pair.published === true){
                         pairs.push(pair);
+                    }
+                }
+                else if (body.homeState === 4) {
+                    if(!pair.community)
+                        continue;
+                    if(body.search){
+                        if(pair.name.toLowerCase().indexOf(body.search.toLowerCase()) === 0)
+                            pairs.push(pair)
+                    }
+                    else if (pair.community === true){
+                        // Query for Community List
+                        pairs.push(pair);
+                    }
                 }
             }
             return res.status(200).json({ success: true, idNamePairs: pairs })
@@ -250,7 +324,7 @@ publishList = async (req, res) => {
                 list.items.push(list.itemSort[i].name);
             }
             console.log(list.items);
-            console.log("Update Community List: " + JSON.stringify(list));
+            console.log("Update Community List(Add): " + JSON.stringify(list));
             list.save()
         })
 

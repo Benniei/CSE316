@@ -1,4 +1,3 @@
-import { color } from '@mui/system';
 import { createContext, useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import api from '../api'
@@ -311,7 +310,6 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function (query) {
-        console.log(query);
         const response = await api.getTop5ListPairs(query);
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
