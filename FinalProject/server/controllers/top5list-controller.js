@@ -133,7 +133,7 @@ deleteTop5List = async (req, res) => {
                 }
                 for(let i = 0; i < top5List.items.length; i++){
                     let score = 5 - i;
-                    let obj = list.itemSort.find(x => x.name === top5List.items[i])
+                    let obj = list.itemSort.find(x => x.name === top5List.items[i].toLowerCase())
                     if(obj){
                         obj.score = obj.score - score;
                         if(obj.score == 0){
@@ -213,8 +213,7 @@ getTop5ListPairs = async (req, res) => {
                     name: list.name,
                     loginName: list.loginName,
                     community: list.community,
-                    published: list.published,
-                    communityDate: list.updatedAt
+                    published: list.published
                 };
                 if(list.likes){
                     pair.likes = list.likes;
@@ -279,6 +278,7 @@ getTop5ListPairs = async (req, res) => {
                 else if (body.homeState === 4) {
                     if(!pair.community)
                         continue;
+                    pair.publishedDate = list.updatedAt;
                     if(body.search){
                         if(pair.name.toLowerCase().indexOf(body.search.toLowerCase()) === 0)
                             pairs.push(pair)
@@ -338,11 +338,11 @@ publishList = async (req, res) => {
             }
             for(let i = 0; i < top5List.items.length; i++){
                 let score = 5 - i;
-                let obj = list.itemSort.find(x => x.name === top5List.items[i])
+                let obj = list.itemSort.find(x => x.name === top5List.items[i].toLowerCase())
                 if(obj){
                     obj.score = obj.score + score;
                 } else{
-                    list.itemSort.push({name: top5List.items[i], score: score})
+                    list.itemSort.push({name: top5List.items[i].toLowerCase(), score: score})
                 }
             }
             list.itemSort.sort((a, b) => {
