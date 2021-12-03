@@ -18,17 +18,22 @@ function Statusbar() {
 
     return (
         auth.loggedIn?
-            <div id="top5-statusbar">
-                <Fab 
-                    color="primary" 
-                    aria-label="add"
-                    id="add-list-button"
-                    onClick={handleCreateNewList}
-                >
-                    <AddIcon />
-                </Fab>
-                    <Typography variant="h2">Your Lists</Typography>
-            </div>
+            (store.homeState === 1)?
+                <div id="top5-statusbar">
+                    <Fab 
+                        color="primary" 
+                        aria-label="add"
+                        id="add-list-button"
+                        onClick={handleCreateNewList}
+                    >
+                        <AddIcon />
+                    </Fab>
+                        <Typography variant="h2">Your Lists</Typography>
+                </div>
+            :
+                <div id="top5-statusbar">
+                        <Typography variant="h2">{store.search} Lists</Typography>
+                </div>
         :
             null
     );

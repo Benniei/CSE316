@@ -73,7 +73,7 @@ export default function SearchBanner(){
         let payload = {
             loginName: auth.user.loginName,
             homeState: currentState,
-            search: text
+            search: text.trim()
         };
         store.loadIdNamePairs(payload);
     };

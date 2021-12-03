@@ -39,7 +39,8 @@ function GlobalStoreContextProvider(props) {
         listMarkedForDeletion: null,
         heh: false,
         publish: false,
-        homeState: 0
+        homeState: 0,
+        search: null
     });
     const history = useHistory();
 
@@ -62,7 +63,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: payload.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: store.search
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -76,7 +78,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: store.publish,
-                    homeState: 1 // goes to home
+                    homeState: 1, // goes to home
+                    search: null
                 })
             }
             // CREATE A NEW LIST
@@ -90,7 +93,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh:false,
                     publish: store.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: null
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -104,7 +108,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh:false,
                     publish: store.publish,
-                    homeState: payload.homeState
+                    homeState: payload.homeState,
+                    search: payload.searchText
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -118,7 +123,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: payload,
                     heh: false,
                     publish: store.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: store.search
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -132,7 +138,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: store.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: store.search
                 });
             }
             // UPDATE A LIST
@@ -146,7 +153,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: payload.publish,
-                    homeState: 0
+                    homeState: 0,
+                    search: null
                 });
             }
             // START EDITING A LIST ITEM
@@ -160,7 +168,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: store.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: null
                 });
             }
             // START EDITING A LIST NAME
@@ -174,7 +183,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: store.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: null
                 });
             }
             case GlobalStoreActionType.LIST_NOT_FOUND: {
@@ -187,7 +197,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: true,
                     publish: store.publish,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    search: store.search
                 })
             }
             case GlobalStoreActionType.FINISH_PUBLISH: {
@@ -200,7 +211,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh: false,
                     publish: store.publish,
-                    homeState: 1
+                    homeState: 1,
+                    search: null
                 })
             }
             default:
@@ -311,13 +323,28 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function (query) {
         const response = await api.getTop5ListPairs(query);
+        let searchText = null
+        if(query.search && query.searchText !== 1 && query.search !== ""){
+            searchText = query.search;
+        }
+        else if(query.homeState === 2){
+            searchText = "All";
+        }
+        else if(query.homeState === 3){
+            searchText = "User's";
+        }
+        else if(query.homeState === 4){
+            searchText = "Community"
+        }
+
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: {
                     arr: pairsArray,
-                    homeState: query.homeState
+                    homeState: query.homeState,
+                    searchText: searchText
                 }
             });
         }
@@ -357,7 +384,8 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: {
                     arr: arr,
-                    homeState: store.homeState
+                    homeState: store.homeState,
+                    searchText: store.searchText
                 }
             });
             history.push("/");
