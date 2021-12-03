@@ -158,11 +158,16 @@ export default function SearchBanner(){
                                 aria-haspopup="true"
                                 color="inherit"
                                 onClick={handleHome}
+                                disabled={auth.guest}
                             >
-                            {(currentState === 1)?
-                            <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000', border: "2px solid green"}}/>
+                            {
+                            (!auth.guest)?
+                                (currentState === 1)?
+                                <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000', border: "2px solid green"}}/>
+                                :
+                                <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000' }}/>
                             :
-                            <HomeOutlinedIcon sx={{ fontSize: 35, color: '#000000' }}/>
+                                <HomeOutlinedIcon sx={{ fontSize: 35, color: '#808080' }}/>
                             }
                         </IconButton>
                         <IconButton

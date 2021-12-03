@@ -28,6 +28,11 @@ export default function AppBanner() {
         auth.logoutUser();
     }
 
+    const handleSplash = () => {
+        handleMenuClose();
+        auth.guestOut();
+    }
+
     const menuId = 'primary-search-account-menu';
     const loggedOutMenu = (
         <Menu
@@ -70,7 +75,28 @@ export default function AppBanner() {
 
     let initials = "";
     let menu = loggedOutMenu;
-    if (auth.loggedIn) {
+    if(auth.guest){
+        menu = <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem onClick={handleSplash}><Link to='/'>Return to Home Screen</Link></MenuItem> 
+        </Menu>
+    }
+    if (auth.loggedIn && auth.guest === false) {
         menu = loggedInMenu;
         initials = auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0);
     }
@@ -94,7 +120,7 @@ export default function AppBanner() {
                     <Box sx={{ flexGrow: 1 }}></Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         {
-                            !auth.loggedIn?
+                            !auth.loggedIn || auth.guest?
                             <IconButton
                                 size="large"
                                 edge="end"

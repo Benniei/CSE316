@@ -15,10 +15,20 @@ const HomeScreen = () => {
     const { auth } = useContext(AuthContext);
 
     useEffect(() => {
-        let payload = {
-            loginName: auth.user.loginName,
-            homeState: 1
-        };
+        let payload = null;
+        if(auth.guest){
+            payload = {
+                community: true,
+                homeState: 4
+            };
+        }
+        else{
+            console.log("guest pass")
+            payload = {
+                loginName: auth.user.loginName,
+                homeState: 1
+            };
+        }
         store.loadIdNamePairs(payload);
     }, []);
 

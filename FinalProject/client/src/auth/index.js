@@ -13,7 +13,8 @@ export const AuthActionType = {
     LOGIN_ERROR: "LOGIN_ERROR",
     LOGOUT: "LOGOUT",
     CLOSE_MODAL: "CLOSE_MODAL",
-    GUEST_IN: "GUEST_IN"
+    GUEST_IN: "GUEST_IN",
+    GUEST_OUT: "GUEST_OUT"
 }
 
 function AuthContextProvider(props) {
@@ -90,10 +91,19 @@ function AuthContextProvider(props) {
             case AuthActionType.GUEST_IN: {
                 return setAuth({
                     user: null,
-                    loggedIn: false,
+                    loggedIn: true,
                     modal: false,
                     message: null,
                     guest: true
+                })
+            }
+            case AuthActionType.GUEST_OUT: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    modal: false,
+                    message: null,
+                    guest: false
                 })
             }
             default:
@@ -102,14 +112,17 @@ function AuthContextProvider(props) {
     }
 
     auth.loginGuest = async function(store) {
-        history.push("/");
-        let payload = {
-            community: true,
-            homeState: 4
-        };
-        store.loadIdNamePairs(payload);
+        authReducer({
+            type: AuthActionType.GUEST_IN,
+            payload: null
+        });
     }
-
+    auth.guestOut = async function(){
+        authReducer({
+            type:AuthActionType.GUEST_OUT,
+            payload: null
+        })
+    }
     auth.getLoggedIn = async function () {
         const response = await api.getLoggedIn();
         if(response){
