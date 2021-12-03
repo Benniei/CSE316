@@ -36,6 +36,12 @@ export const getTop5ListById = (id) => api.get(`/top5list/${id}`)
    return error.response;
 });
 export const publishList = (payload) => api.put(`/top5listpublish`, payload)
+.then(response => {
+   return response
+})
+.catch(error => {
+   return error.response;
+});
 export const getTop5ListExist = (payload) => api.post('/top5listexist', payload)
 .then(response => {
    return response

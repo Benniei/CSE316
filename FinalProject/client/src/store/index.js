@@ -299,6 +299,11 @@ function GlobalStoreContextProvider(props) {
         if (response.data.success) {
             // ! ??? what is happening here rerender much often
             history.push("/");
+            storeReducer({
+                type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
+                payload: {}
+            });
+            
         }
     }
 

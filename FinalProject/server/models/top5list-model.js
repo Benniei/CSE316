@@ -11,7 +11,7 @@ const Top5ListSchema = new Schema(
         publishedDate: {type: Date},
         published: {type: Boolean},
         itemSort: {type: [Object]},
-        comments: {type: [String]},
+        comments: {type: [Object]},
         likes: {type: [String]},
         dislikes: {type: [String]}
     },
