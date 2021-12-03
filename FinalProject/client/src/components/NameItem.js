@@ -40,6 +40,13 @@ function Top5Item(props) {
         setText(event.target.value);
     }
 
+    function handleonBlur(){
+        let id = store.currentList._id;
+        if(text)
+            store.changeListName(id, text);;
+        toggleEdit();
+    }
+
     let itemClass = "top5-item";
 
     let cardElement = <ListItem
@@ -72,6 +79,7 @@ function Top5Item(props) {
                 inputProps={{style: {fontSize: 48}}}
                 InputLabelProps={{style: {fontSize: 24}}}
                 autoFocus
+                onBlur={handleonBlur}
             />
     }
 

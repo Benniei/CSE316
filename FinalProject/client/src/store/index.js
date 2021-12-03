@@ -40,7 +40,8 @@ function GlobalStoreContextProvider(props) {
         heh: false,
         publish: false,
         homeState: 0,
-        search: null
+        search: null,
+        sortState: 0
     });
     const history = useHistory();
 
@@ -64,7 +65,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: payload.publish,
                     homeState: store.homeState,
-                    search: store.search
+                    search: store.search,
+                    sortState: store.sortState
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -79,7 +81,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: store.publish,
                     homeState: 1, // goes to home
-                    search: null
+                    search: null,
+                    sortState: store.sortState
                 })
             }
             // CREATE A NEW LIST
@@ -94,7 +97,8 @@ function GlobalStoreContextProvider(props) {
                     heh:false,
                     publish: store.publish,
                     homeState: store.homeState,
-                    search: null
+                    search: null,
+                    sortState: store.sortState
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -109,7 +113,8 @@ function GlobalStoreContextProvider(props) {
                     heh:false,
                     publish: store.publish,
                     homeState: payload.homeState,
-                    search: payload.searchText
+                    search: payload.searchText,
+                    sortState: payload.sortState
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -124,7 +129,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: store.publish,
                     homeState: store.homeState,
-                    search: store.search
+                    search: store.search,
+                    sortState: store.sortState
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -139,7 +145,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: store.publish,
                     homeState: store.homeState,
-                    search: store.search
+                    search: store.search,
+                    sortState: store.sortState
                 });
             }
             // UPDATE A LIST
@@ -154,7 +161,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: payload.publish,
                     homeState: 0,
-                    search: null
+                    search: null,
+                    sortState: store.sortState
                 });
             }
             // START EDITING A LIST ITEM
@@ -169,7 +177,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: store.publish,
                     homeState: store.homeState,
-                    search: null
+                    search: null,
+                    sortState: store.sortState
                 });
             }
             // START EDITING A LIST NAME
@@ -184,7 +193,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: store.publish,
                     homeState: store.homeState,
-                    search: null
+                    search: null,
+                    sortState: store.sortState
                 });
             }
             case GlobalStoreActionType.LIST_NOT_FOUND: {
@@ -198,7 +208,8 @@ function GlobalStoreContextProvider(props) {
                     heh: true,
                     publish: store.publish,
                     homeState: store.homeState,
-                    search: store.search
+                    search: store.search,
+                    sortState: store.sortState
                 })
             }
             case GlobalStoreActionType.FINISH_PUBLISH: {
@@ -212,7 +223,8 @@ function GlobalStoreContextProvider(props) {
                     heh: false,
                     publish: store.publish,
                     homeState: 1,
-                    search: null
+                    search: null,
+                    sortState: store.sortState
                 })
             }
             default:
@@ -323,9 +335,11 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function (query) {
         const response = await api.getTop5ListPairs(query);
-        let searchText = null
+        let searchText = null;
+        let sort = 0;
         if(query.search && query.searchText !== 1 && query.search !== ""){
             searchText = query.search;
+            sort = store.sortState
         }
         else if(query.homeState === 2){
             searchText = "All";
@@ -339,18 +353,71 @@ function GlobalStoreContextProvider(props) {
 
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
-            storeReducer({
-                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: {
-                    arr: pairsArray,
-                    homeState: query.homeState,
-                    searchText: searchText
-                }
-            });
+            if(sort > 0){
+                store.updateSort(sort, pairsArray);
+            }
+            else{
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: {
+                        arr: pairsArray,
+                        homeState: query.homeState,
+                        searchText: searchText,
+                        sortState: sort
+                    }
+                });
+            }
         }
         else {
             console.log("API FAILED TO GET THE LIST PAIRS");
         }
+    }
+
+    store.updateSort = async function(sortState, list) {
+        if(sortState === 1){
+            list.sort((a, b) => {
+                if(b.publishedDate > a.publishedDate)
+                    return 1;
+                else if (b.publishedDate === a.publishedDate)
+                    return 0;
+                else
+                    return -1;
+            });
+        }
+        else if(sortState === 2){
+            list.sort((a, b) => {
+                if(b.publishedDate < a.publishedDate)
+                    return 1;
+                else if (b.publishedDate === a.publishedDate)
+                    return 0;
+                else
+                    return -1;
+            });
+        }
+        else if(sortState === 3){
+            list.sort((a, b) => {
+                return b.views - a.views
+            });
+        }
+        else if(sortState === 4){
+            list.sort((a, b) => {
+                return b.likes.length - a.likes.length
+            });
+        }
+        else if(sortState === 5){
+            list.sort((a, b) => {
+                return b.dislikes.length - a.dislikes.length
+            });
+        }
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: {
+                arr: list,
+                homeState: store.homeState,
+                searchText: store.search,
+                sortState: sortState
+            }
+        });
     }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
@@ -385,7 +452,8 @@ function GlobalStoreContextProvider(props) {
                 payload: {
                     arr: arr,
                     homeState: store.homeState,
-                    searchText: store.searchText
+                    searchText: store.searchText,
+                    sortState: store.sortState
                 }
             });
             history.push("/");

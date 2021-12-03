@@ -213,8 +213,32 @@ getTop5ListPairs = async (req, res) => {
                     name: list.name,
                     loginName: list.loginName,
                     community: list.community,
-                    published: list.published
+                    published: list.published,
                 };
+                if(list.likes){
+                    pair.likes = list.likes;
+                }
+                else{
+                    pair.likes = [];
+                }
+                if(list.dislikes){
+                    pair.dislikes = list.dislikes;
+                }
+                else{
+                    pair.dislikes = [];
+                }
+                if(list.views){
+                    pair.views = list.views;
+                }
+                else{
+                    pair.views = [];
+                }
+                if(list.publishedDate){
+                    pair.publishedDate = list.publishedDate;
+                }
+                else{
+                    pair.publishedDate = 0;
+                }
                 
                 // ! pruning results to fit the body
                 if(body.homeState === 1){
@@ -303,7 +327,8 @@ publishList = async (req, res) => {
                     itemSort: [],
                     comments: [],
                     likes: [],
-                    dislikes: []
+                    dislikes: [],
+                    views: 0
                 }
                 list = new Top5List(newList);
             }

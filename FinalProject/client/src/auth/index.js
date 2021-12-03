@@ -138,7 +138,7 @@ function AuthContextProvider(props) {
                 history.push("/");
                 store.newListCounter = 0;
                 let payload = {
-                    loginName: auth.user.loginName,
+                    loginName: response.data.user.loginName,
                     homeState: 1
                 };
                 store.loadIdNamePairs(payload);

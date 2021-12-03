@@ -78,6 +78,31 @@ export default function SearchBanner(){
         store.loadIdNamePairs(payload);
     };
 
+    const handleSort1 = () => {
+        store.updateSort(1, store.idNamePairs);
+        handleMenuClose();
+    };
+
+    const handleSort2 = () => {
+        store.updateSort(2, store.idNamePairs);
+        handleMenuClose();
+    };
+
+    const handleSort3 = () => {
+        store.updateSort(3, store.idNamePairs);
+        handleMenuClose();
+    };
+
+    const handleSort4 = () => {
+        store.updateSort(4, store.idNamePairs);
+        handleMenuClose();
+    };
+
+    const handleSort5 = () => {
+        store.updateSort(5, store.idNamePairs);
+        handleMenuClose();
+    };
+
     const currentState = store.homeState;
     const sortMenu = (<Menu
             anchorEl={anchorEl}
@@ -94,11 +119,31 @@ export default function SearchBanner(){
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Publish Date (Newest)</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Publish Date (Oldest)</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Views</MenuItem>   
-            <MenuItem onClick={handleMenuClose}>Likes</MenuItem>   
-            <MenuItem onClick={handleMenuClose}>Dislikes</MenuItem>   
+            {store.sortState === 1?
+                <MenuItem onClick={handleSort1} sx={{backgroundColor:"#D3D3D3"}}>Publish Date (Newest)</MenuItem>
+                :
+                <MenuItem onClick={handleSort1}>Publish Date (Newest)</MenuItem>
+            }
+            {store.sortState === 2?
+                <MenuItem onClick={handleSort2} sx={{backgroundColor:"#D3D3D3"}}>Publish Date (Oldest)</MenuItem>
+                :
+                <MenuItem onClick={handleSort2}>Publish Date (Oldest)</MenuItem>
+            }
+            {store.sortState === 3?
+                <MenuItem onClick={handleSort3} sx={{backgroundColor:"#D3D3D3"}}>Views (Newest)</MenuItem>
+                :
+                <MenuItem onClick={handleSort3}>Views</MenuItem>
+            }
+            {store.sortState === 4?
+                <MenuItem onClick={handleSort4} sx={{backgroundColor:"#D3D3D3"}}>Likes (Newest)</MenuItem>
+                :
+                <MenuItem onClick={handleSort4}>Likes</MenuItem> 
+            }
+            {store.sortState === 5?
+                <MenuItem onClick={handleSort5} sx={{backgroundColor:"#D3D3D3"}}>Dislikes (Newest)</MenuItem>
+                :
+                <MenuItem onClick={handleSort5}>Dislikes</MenuItem>
+            }
         </Menu>);
     return (
         <Box sx={{ flexGrow: 1 }}>

@@ -27,6 +27,12 @@ function Top5Item(props) {
         }
     }
 
+    function handleonBlur(){
+        if(text)
+            store.updateItem(index, text.trim());
+        toggleEdit();
+    }
+
     function toggleEdit() {
         let newActive = !editActive;
         if (newActive) {
@@ -73,6 +79,7 @@ function Top5Item(props) {
                 inputProps={{style: {fontSize: 48}}}
                 InputLabelProps={{style: {fontSize: 24}}}
                 autoFocus
+                onBlur={handleonBlur}
             />
     }
 
