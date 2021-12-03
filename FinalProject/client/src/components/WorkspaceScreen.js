@@ -1,12 +1,13 @@
 import { useContext } from 'react';
 import Top5Item from './Top5Item.js';
-import NameItem from './NameItem'
+import NameItem from './NameItem.js'
 import List from '@mui/material/List';
 import { Typography } from '@mui/material';
 import { GlobalStoreContext } from '../store/index.js';
 import AuthContext from '../auth';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import SearchBanner from './SearchBanner.js';
 /*
     This React component lets us edit a loaded list, which only
     happens when we are on the proper route.
@@ -38,13 +39,7 @@ function WorkspaceScreen() {
 
     if (store.currentList) {
         editItems = 
-            <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper', padding: 0 }}>
-                {
-                    <NameItem
-                        key={'top5-item-name'}
-                        text={store.currentList.name}
-                    />
-                }
+            <List id="edit-items" sx={{ width: '100%', padding: 0 }}>
                 {
                     store.currentList.items.map((item, index) => (
                         (item !== "?")?
@@ -91,40 +86,54 @@ function WorkspaceScreen() {
     return (
         !hehFlag ?
         <div id="top5-workspace">
-            
-            <div id="workspace-edit">
-                <div id="edit-numbering">
-                    <div className="item-number"><Typography variant="h3">Name:</Typography></div>
-                    <div className="item-number"><Typography variant="h3">1.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">2.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">3.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">4.</Typography></div>
-                    <div className="item-number"><Typography variant="h3">5.</Typography></div>
+            <div id="workspace-edit"> 
+                {store.currentList?
+                    <NameItem
+                        key={'top5-item-name'}
+                        text={store.currentList.name}
+                    />
+                    :
+                    null
+                }      
+                <div id="item-content">
+                    
+                    <div id="edit-numbering">
+                        <div className="item-number"><Typography variant="h3">1.</Typography></div>
+                        <div className="item-number"><Typography variant="h3">2.</Typography></div>
+                        <div className="item-number"><Typography variant="h3">3.</Typography></div>
+                        <div className="item-number"><Typography variant="h3">4.</Typography></div>
+                        <div className="item-number"><Typography variant="h3">5.</Typography></div>
+                    </div>
+                    {editItems}
                 </div>
-                {editItems}
-            </div>
-            <div>
                 <Stack
                     direction = "row"
                     alignItems = "right"
                     justifyContent = "right"
                     spacing={3}
-                    pr={2}
+                    pr={5}
+                    pt={7}
                     >
                     <Button
                         type="submit"
+                        id="save"
                         variant="contained"
-                        style={{maxWidth: '200px', maxHeight: '100px', minWidth: '150px', minHeight: '30px'}}
+                        style={{maxWidth: '200px', maxHeight: '100px', minWidth: '400px', minHeight: '30px'}}
                         onClick={handleClose}
+                        variant="outlined"
+                        style={{backgroundColor: "#dddddd", borderColor: '#000000', fontWeight: 700, fontSize: 25, color: '#000000'}}
                     >
                         Save
                     </Button>
                     <Button
                         type="submit"
+                        id="publish"
                         variant="contained"
                         style={{maxWidth: '200px', maxHeight: '100px', minWidth: '150px', minHeight: '30px'}}
                         disabled={!canPublish}
                         onClick={handlePublish}
+                        variant="outlined"
+                        style={{backgroundColor: "#dddddd", borderColor: '#000000', fontWeight: 700, fontSize: 25}}
                     >
                         Publish
                     </Button>

@@ -148,7 +148,8 @@ export default function SearchBanner(){
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" style={{
-                backgroundColor: "#abcd12"
+                backgroundColor: "#c4c4c4",
+                boxShadow: "none"
             }}>
                 <Toolbar>
                         <IconButton

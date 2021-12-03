@@ -75,7 +75,7 @@ export default function AppBanner() {
 
     let initials = "";
     let menu = loggedOutMenu;
-    if(auth.guest){
+    if(auth.guest){ 
         menu = <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -108,14 +108,15 @@ export default function AppBanner() {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
-                <Toolbar>
+                <Toolbar
+                sx={{backgroundColor: "#e0e0e0"}}>
                     <Typography                        
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { xs: 'none', sm: 'block' }}}                
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>T<sup>5</sup>L</Link>
+                        <Link style={{ textDecoration: 'none', color: '#d9aa13' }} to='/'>T<sup>5</sup>L</Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}></Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

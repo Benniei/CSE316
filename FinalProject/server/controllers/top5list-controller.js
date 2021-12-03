@@ -214,6 +214,7 @@ getTop5ListPairs = async (req, res) => {
                     loginName: list.loginName,
                     community: list.community,
                     published: list.published,
+                    communityDate: list.updatedAt
                 };
                 if(list.likes){
                     pair.likes = list.likes;

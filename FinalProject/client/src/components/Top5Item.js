@@ -6,8 +6,6 @@ import ListItem from '@mui/material/ListItem';
 /*
     This React component represents a single item in our
     Top 5 List, which can be edited or moved around.
-    
-    @author McKilla Gorilla
 */
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -53,10 +51,11 @@ function Top5Item(props) {
                 id={'item-' + (index+1)}
                 key={props.key}
                 className={itemClass}
-                sx={{ display: 'flex', p: 1 }}
+                sx={{ display: 'flex', p: 1}}
                 style={{
                     fontSize: '48pt',
-                    width: '100%'
+                    width: '100%',
+                    height: '20%'
                 }}
                 onClick={handleToggleEdit}
             >
@@ -76,8 +75,9 @@ function Top5Item(props) {
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 defaultValue={props.text}
-                inputProps={{style: {fontSize: 48}}}
+                inputProps={{style: {fontSize: 55}}}
                 InputLabelProps={{style: {fontSize: 24}}}
+                size="small"
                 autoFocus
                 onBlur={handleonBlur}
             />

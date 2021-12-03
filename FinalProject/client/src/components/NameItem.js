@@ -47,7 +47,7 @@ function Top5Item(props) {
         toggleEdit();
     }
 
-    let itemClass = "top5-item";
+    let itemClass = "top5-item-name";
 
     let cardElement = <ListItem
                 id={'listname'}
@@ -55,19 +55,18 @@ function Top5Item(props) {
                 className={itemClass}
                 sx={{ display: 'flex', p: 1 }}
                 style={{
-                    fontSize: '48pt',
-                    width: '100%'
+                    fontSize: '20pt',
+                    width: '50%'
                 }}
                 onClick={handleToggleEdit}
             >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
+                {props.text}
             </ListItem>;
 
     if (editActive) {
         cardElement =
             <TextField
                 required
-                fullWidth
                 id={"item-name"}
                 label="Item Name"
                 name="name"
@@ -76,9 +75,10 @@ function Top5Item(props) {
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 defaultValue={props.text}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
+                inputProps={{style: {fontSize: 19.5, fontWeight: 700}}}
+                InputLabelProps={{style: {fontSize: 20}}}
                 autoFocus
+                size="small"
                 onBlur={handleonBlur}
             />
     }

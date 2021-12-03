@@ -96,7 +96,7 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     heh:false,
                     publish: store.publish,
-                    homeState: store.homeState,
+                    homeState: 0,
                     search: null,
                     sortState: store.sortState
                 })
