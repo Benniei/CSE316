@@ -197,15 +197,15 @@ body {
   position: absolute;
   left: 1%;
   top: 0%;
-  width: 7%;
+  width: 9%;
   height: 90%;
 }
 
 #edit-items {
   position: absolute;
-  left: 9%;
+  left: 11.5%;
   top: 0%;
-  width:90%;
+  width:87%;
   height: 92%;
 }
 
@@ -269,9 +269,14 @@ input {
 }
 
 .expanded-list-left{
-  left:5%
+  left:5%;
+  background-color: var(--swatch-status);
 }
 
+.comment-style{
+  border: 1px solid black;
+  border-radius: 20px;
+}
 
 .list-published{
   background-color: #d4d5f6;

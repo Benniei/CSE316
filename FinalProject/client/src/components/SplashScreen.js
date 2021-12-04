@@ -66,7 +66,13 @@ export default function SplashScreen() {
                     >
                         View as Guest
                     </Button>
+            
             </Stack>
+            <Typography
+                style={{color:"black", flex: 1, paddingTop: 20}}
+            >
+                Made By Bennie
+            </Typography>
         </div>
     )
 }

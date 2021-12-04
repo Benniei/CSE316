@@ -2,57 +2,44 @@ import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import Stack from '@mui/material/Stack';
+import { Typography } from '@mui/material';
 
 /*
     This is a card in our list of top 5 lists. It lets select
     a list for editing and it has controls for changing its 
     name or deleting it.
-    
-    @author McKilla Gorilla
 */
 function CommentCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const { idNamePair } = props;
+    const { index, comm, user} = props;
     const [text, setText] = useState(""); // comment text
-    const [expand, setExpand] = useState(false);
 
-    function handleLoadList(event, id) {
-        if (!event.target.disabled) {
-            // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
-        }
-    }
-
-    async function handleDeleteList(event, id) {
-        event.stopPropagation();
-        store.markListForDeletion(id);
-    }
-
+    let commentStyle = "comment-style"
     let cardElement =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }
-            }
+            id={"comment" + index}
+            key={"comment" + index}
+            sx={{ marginTop: '5px', display: 'flex', p: 1 }}
             style={{
-                fontSize: '48pt',
-                width: '100%'
+                width: '100%',
+                backgroundColor: '#d8ac22'
             }}
+            className={commentStyle}
         >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
+            <Stack
+                >
+                <Typography
+                    sx={{ml: 1}}
+                    style={{color:"#0c2bff", fontSize:"10pt", fontWeight:550}}>
+                        {user}
+                </Typography>
+                <Typography
+                    sx={{ml: 1, mt: -1}}
+                    style={{color:"#000000", fontSize:"13pt"}}>
+                        {comm}
+                </Typography>
+            </Stack>
         </ListItem>
 
     return (

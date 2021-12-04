@@ -90,9 +90,10 @@ updateTop5List = async (req, res) => {
                     top5List.views = 1;
             }
             else if(body.comments){
-                if(body.comments.length > 0) {
+                if(top5List.comments.length > 0) 
                     top5List.comments.push(body.comments)
-                }
+                else
+                    top5List.comments = [body.comments];
             }
             else if(body.unlike){
                 var index = top5List.likes.indexOf(body.unlike);

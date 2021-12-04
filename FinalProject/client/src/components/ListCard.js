@@ -15,6 +15,8 @@ import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined
 import { Typography } from '@mui/material';
 import AuthContext from '../auth'
 import List from '@mui/material/List';
+import CommentCard from './CommentCard.js'
+import TextField from '@mui/material/TextField';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -34,6 +36,10 @@ function ListCard(props) {
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
         }
+    }
+
+    function handleUpdateText(event) {
+        setText(event.target.value);
     }
 
     async function handleDeleteList(event, id) {
@@ -84,6 +90,18 @@ function ListCard(props) {
         store.collapseList();
     }
 
+    function handleComment(){
+        let payload ={
+            comments: {
+                user: auth.user.loginName,
+                text: text
+            },
+            expand: idNamePair._id
+        }
+        setText("");
+        store.userResponse(idNamePair._id, payload);
+    }
+
     let d = new Date(idNamePair.publishedDate);
     const months = [
         'Jan',
@@ -101,7 +119,6 @@ function ListCard(props) {
       ]
     let date = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
     if(store.currentList){
-        console.log(store.currentList._id + ", " + idNamePair._id)
         if(store.currentList._id === idNamePair._id)
             expand = true
     }
@@ -120,7 +137,6 @@ function ListCard(props) {
     let unpublishedClass = "list-notpublished"
 
     let leftSide = "expanded-list-left";
-    let rightSide = "expanded-list-right";
 
     if(idNamePair.published || idNamePair.community){
         cardElement = <ListItem
@@ -257,8 +273,35 @@ function ListCard(props) {
 
                 {
                     expand?
-                    <Grid item xs={5.5} sx={{height: 300, ml:1}} className={rightSide}>
-                        
+                    <Grid item xs={6} sx={{height: 300, ml:1, pt:0, pl:0}} style={{padding: 0}}>
+                        <List sx={{pl:0, pt:0, height: '95%', overflow:'auto'}}>
+                            {
+                                store.currentList.comments.map((pair,index) => (
+                                    <CommentCard
+                                        key={index}
+                                        index={index}
+                                        comm={pair.text}
+                                        user={pair.user}
+                                    />
+                                ))
+                            }
+                        </List>
+                        <TextField   
+                                id="comment"
+                                label="Comment"
+                                name="comment"
+                                autoComplete="Comment"
+                                size="small"
+                                fullWidth
+                                onChange={handleUpdateText}
+                                value={text}
+                                sx={{backgroundColor:"#FFFFFF"}}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter'){
+                                        handleComment(event);
+                                    }
+                                }}
+                            />
                     </Grid>
                     :
                     null

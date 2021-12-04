@@ -406,6 +406,10 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.updateSort = async function(sortState, list, currentList) {
+        let others = list.filter((x) => {return x.publishedDate === 0})
+        list = list.filter((x) => {return x.publishedDate !== 0})
+        
+        console.log(others)
         if(sortState === 1){
             list.sort((a, b) => {
                 if(b.publishedDate > a.publishedDate)
@@ -441,6 +445,7 @@ function GlobalStoreContextProvider(props) {
                 return b.dislikes.length - a.dislikes.length
             });
         }
+        list.push(...others);
         storeReducer({
             type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
             payload: {
