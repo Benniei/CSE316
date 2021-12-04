@@ -22,8 +22,7 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
-    LIST_NOT_FOUND: "LIST_NOT_FOUND",
-    FINISH_PUBLISH: "FINISH_PUBLISH"
+    LIST_NOT_FOUND: "LIST_NOT_FOUND"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -425,6 +424,22 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.userResponse = async function(id, payload) {
+        const response = await api.updateTop5ListById(id, payload);
+        if(response.data.success){
+            let payload2 = {
+                homeState: store.homeState
+            }
+            if(store.homeState === 1){
+                payload2.loginName = auth.user.loginName;
+            }
+            if(store.search){
+                payload2.search = store.search;
+            } 
+            store.loadIdNamePairs(payload2)
+        }
+    } 
+
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
@@ -491,6 +506,7 @@ function GlobalStoreContextProvider(props) {
                         user: auth.user.loginName
                     }
                     let response = await api.getTop5ListExist(payload);
+                    history.push("/top5list/" + top5List._id);
                     if(response.data.success){
                         storeReducer({
                             type: GlobalStoreActionType.SET_CURRENT_LIST,
@@ -509,11 +525,10 @@ function GlobalStoreContextProvider(props) {
                             }
                         });
                     }
-                    history.push("/top5list/" + top5List._id);
                 }
             }
             checkUniqueName(top5List);
-    }
+        }
         else{
             storeReducer({
                 type: GlobalStoreActionType.LIST_NOT_FOUND,

@@ -260,6 +260,19 @@ input {
   background-color: var(--swatch-complement);
 }
 
+.list-published,
+.list-notpublished{
+  border: 1px solid black;
+  border-radius: 25px;
+}
+
+.list-published{
+  background-color: #d4d5f6;
+}
+
+.list-notpublished{
+  background-color: #fffff1;
+}
 
 .disabled {
   background-color: lightgray;

@@ -11,6 +11,7 @@ import SignInSide from './SignInSide'
 import DeleteModal from './DeleteModal'
 import NameItem from './NameItem'
 import SearchBanner from './SearchBanner'
+import CommentCard from './CommentCard'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -30,4 +31,5 @@ export {
     NameItem, 
     WorkspaceScreen,
     DeleteModal,
-    SearchBanner}
+    SearchBanner,
+    CommentCard}

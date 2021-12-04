@@ -4,10 +4,8 @@ import NameItem from './NameItem.js'
 import List from '@mui/material/List';
 import { Typography } from '@mui/material';
 import { GlobalStoreContext } from '../store/index.js';
-import AuthContext from '../auth';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import SearchBanner from './SearchBanner.js';
 /*
     This React component lets us edit a loaded list, which only
     happens when we are on the proper route.

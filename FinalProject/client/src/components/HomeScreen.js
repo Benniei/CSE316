@@ -23,7 +23,6 @@ const HomeScreen = () => {
             };
         }
         else{
-            console.log("guest pass")
             payload = {
                 loginName: auth.user.loginName,
                 homeState: 1
@@ -36,7 +35,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store.idNamePairs) {
         listCard = 
-            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ width: '90%', left: '5%'}}>
             {
                 store.idNamePairs.map((pair) => (
                     <ListCard

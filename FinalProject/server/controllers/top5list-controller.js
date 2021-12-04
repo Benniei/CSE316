@@ -52,7 +52,7 @@ updateTop5List = async (req, res) => {
                 message: 'Top 5 List not found!',
             })
         }
-
+        console.log(body);
         // TODO update the views using here
         // Normal list update
         if(body._id){
@@ -63,26 +63,34 @@ updateTop5List = async (req, res) => {
         }
         else{
             if(body.likes != null){
+                var index = top5List.dislikes.indexOf(body.likes);
+                if(index !== -1)
+                    top5List.dislikes.splice(index, 1);
+                
                 if(top5List.likes)
                     top5List.likes.push(body.likes);
                 else{
                     top5List.likes = [body.likes];
                 }
             }
-            if(body.dislikes != null) {
+            else if(body.dislikes != null) {
+                var index = top5List.likes.indexOf(body.dislikes);
+                if(index !== -1)
+                    top5List.likes.splice(index, 1);
+                
                 if(top5List.dislikes)
                     top5List.dislikes.push(body.dislikes);
                 else{
                     top5List.dislikes = [body.dislikes];
                 }
             }
-            if(body.views != null) {
+            else if(body.views != null) {
                 if(top5List.views)
                     top5List.views = top5List.views + 1;
                 else
                     top5List.views = 1;
             }
-            if(body.comments){
+            else if(body.comments){
                 if(body.comments.length > 0) {
                     top5List.comments.push(body.comments)
                 }
@@ -231,7 +239,7 @@ getTop5ListPairs = async (req, res) => {
                     pair.views = list.views;
                 }
                 else{
-                    pair.views = [];
+                    pair.views = 0;
                 }
                 if(list.publishedDate){
                     pair.publishedDate = list.publishedDate;
