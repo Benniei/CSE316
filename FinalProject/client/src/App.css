@@ -101,9 +101,10 @@ body {
   position: relative;
   border: 1px solid black;
   border-radius: 25px;
-  left: 0%;
-  width: 100%;
-  height: 80%;
+  left: 1%;
+  width: 97%;
+  height: 78%;
+  top: 1%;
   background-color: var(--swatch-edit);
 }
 
