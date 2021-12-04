@@ -40,7 +40,7 @@ function WorkspaceScreen() {
             <List id="edit-items" sx={{ width: '100%', padding: 0 }}>
                 {
                     store.currentList.items.map((item, index) => (
-                        (item !== "?")?
+                        (item !== "")?
                         <Top5Item 
                             key={'top5-item-' + (index)}
                             text={item}
@@ -58,10 +58,9 @@ function WorkspaceScreen() {
         let currList = store.currentList.items;
         // Checks for empty items in the list
         if(store.publish){
-            if(!currList.includes("?")){
+            if(!currList.includes("")){
                 // Checks if any of the Items are repeats
                 if(!checkIfDuplicateExists(currList)){
-                    // TODO Check for list name
                     canPublish = true;
                 }
                 else{

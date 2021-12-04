@@ -315,7 +315,7 @@ function GlobalStoreContextProvider(props) {
 
         let payload = {
             name: newListName,
-            items: ["?", "?", "?", "?", "?"],
+            items: ["", "", "", "", ""],
             loginName: auth.user.loginName,
             community: false
         };
