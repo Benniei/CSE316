@@ -23,7 +23,9 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
-    LIST_NOT_FOUND: "LIST_NOT_FOUND"
+    LIST_NOT_FOUND: "LIST_NOT_FOUND",
+    EXPAND_LIST: "EXPAND_LIST",
+    COLLAPSE_LIST: "COLLAPSE_LIST"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -105,7 +107,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     idNamePairs: payload.arr,
-                    currentList: null,
+                    currentList: payload.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -227,6 +229,21 @@ function GlobalStoreContextProvider(props) {
                     sortState: store.sortState
                 })
             }
+            case GlobalStoreActionType.COLLAPSE_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    heh: false,
+                    publish: store.publish,
+                    homeState: store.homeState,
+                    search: store.search,
+                    sortState: store.sortState
+                })
+            }
             default:
                 return store;
         }
@@ -342,6 +359,7 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs(query);
         let searchText = null;
         let sort = 0;
+        let currentList = null;
         if(query.search && query.searchText !== 1 && query.search !== ""){
             searchText = query.search;
             sort = store.sortState;
@@ -360,16 +378,21 @@ function GlobalStoreContextProvider(props) {
             sort = store.sortState;
         }
 
+        if(query.expand){
+            currentList = response.data.list;
+        }
+
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
             if(sort > 0){
-                store.updateSort(sort, pairsArray);
+                store.updateSort(sort, pairsArray, currentList);
             }
             else{
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
                         arr: pairsArray,
+                        currentList: currentList,
                         homeState: query.homeState,
                         searchText: searchText,
                         sortState: sort
@@ -382,7 +405,7 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.updateSort = async function(sortState, list) {
+    store.updateSort = async function(sortState, list, currentList) {
         if(sortState === 1){
             list.sort((a, b) => {
                 if(b.publishedDate > a.publishedDate)
@@ -422,6 +445,7 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
             payload: {
                 arr: list,
+                currentList: currentList,
                 homeState: store.homeState,
                 searchText: store.search,
                 sortState: sortState
@@ -444,9 +468,19 @@ function GlobalStoreContextProvider(props) {
             if(store.sortState > 0){
                 payload2.sortBy = store.sortState;
             }
+            if(payload.expand){
+                payload2.expand = id;
+            }
             store.loadIdNamePairs(payload2)
         }
-    } 
+    }
+
+    store.collapseList = async function() {
+        storeReducer({
+            type: GlobalStoreActionType.COLLAPSE_LIST,
+            payload: null
+        })
+    }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
@@ -479,6 +513,7 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: {
                     arr: arr,
+                    currentList: null,
                     homeState: store.homeState,
                     searchText: store.searchText,
                     sortState: store.sortState

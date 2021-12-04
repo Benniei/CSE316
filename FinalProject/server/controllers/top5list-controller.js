@@ -223,6 +223,7 @@ getTop5ListPairs = async (req, res) => {
         else {
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
             let pairs = [];
+            let currList = null;
             for (let key in top5Lists) {
                 let list = top5Lists[key];
                 let pair = {
@@ -257,6 +258,11 @@ getTop5ListPairs = async (req, res) => {
                     pair.publishedDate = 0;
                 }
                 
+                if(body.expand){
+                    if(pair._id == body.expand){
+                        currList = top5Lists[key];
+                    }
+                }
                 // ! pruning results to fit the body
                 if(body.homeState === 1){
                     if(pair.community)
@@ -306,7 +312,10 @@ getTop5ListPairs = async (req, res) => {
                     }
                 }
             }
-            return res.status(200).json({ success: true, idNamePairs: pairs })
+            if(currList)
+                return res.status(200).json({ success: true, idNamePairs: pairs, list: currList})
+            else
+                return res.status(200).json({ success: true, idNamePairs: pairs })
         }
     }).catch(err => console.log(err))
 }

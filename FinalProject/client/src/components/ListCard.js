@@ -27,8 +27,7 @@ function ListCard(props) {
     const { auth } = useContext(AuthContext);
     const { idNamePair} = props;
     const [text, setText] = useState(""); // comment text
-    const [expand, setExpand] = useState(false);
-
+    let expand = props.expand;
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
@@ -70,15 +69,18 @@ function ListCard(props) {
     }
 
     function handleDown(){
-        setExpand(true);
+        expand = true;
+        
         let payload = {
-            views: 1
+            views: 1,
+            expand: idNamePair._id
         }
         store.userResponse(idNamePair._id, payload);
     }
 
     function handleUp(){
-        setExpand(false);
+        expand = false
+        store.collapseList();
     }
 
     let d = new Date(idNamePair.publishedDate);
@@ -98,8 +100,9 @@ function ListCard(props) {
       ]
     let date = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
     if(store.currentList){
+        console.log(store.currentList._id + ", " + idNamePair._id)
         if(store.currentList._id === idNamePair._id)
-            setExpand(true);
+            expand = true
     }
 
     let thumbsUp = false;
@@ -217,17 +220,12 @@ function ListCard(props) {
                 </Grid>
                 {
                     expand?
-                    <Grid item xs={5} sx={{height: 300, ml:2}} className={leftSide}>
+                    <Grid item xs={5.5} sx={{height: 300, ml:2}} className={leftSide}>
                         <Stack 
                             direction="column"
                             spacing={2}
                             sx={{pt: 2, pl: 3}}
                             >
-                            <Typography>1. {idNamePair.items[0]}</Typography>
-                            <Typography>2. {idNamePair.items[1]}</Typography>
-                            <Typography>3. {idNamePair.items[2]}</Typography>
-                            <Typography>4. {idNamePair.items[3]}</Typography>
-                            <Typography>5. {idNamePair.items[4]}</Typography>
                         </Stack>
                         
                     </Grid>

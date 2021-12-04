@@ -79,27 +79,27 @@ export default function SearchBanner(){
     };
 
     const handleSort1 = () => {
-        store.updateSort(1, store.idNamePairs);
+        store.updateSort(1, store.idNamePairs, null);
         handleMenuClose();
     };
 
     const handleSort2 = () => {
-        store.updateSort(2, store.idNamePairs);
+        store.updateSort(2, store.idNamePairs, null);
         handleMenuClose();
     };
 
     const handleSort3 = () => {
-        store.updateSort(3, store.idNamePairs);
+        store.updateSort(3, store.idNamePairs, null);
         handleMenuClose();
     };
 
     const handleSort4 = () => {
-        store.updateSort(4, store.idNamePairs);
+        store.updateSort(4, store.idNamePairs, null);
         handleMenuClose();
     };
 
     const handleSort5 = () => {
-        store.updateSort(5, store.idNamePairs);
+        store.updateSort(5, store.idNamePairs, null);
         handleMenuClose();
     };
 
