@@ -261,10 +261,16 @@ input {
 }
 
 .list-published,
-.list-notpublished{
+.list-notpublished,
+.expanded-list-left{
   border: 1px solid black;
   border-radius: 25px;
 }
+
+.expanded-list-left{
+  left:5%
+}
+
 
 .list-published{
   background-color: #d4d5f6;

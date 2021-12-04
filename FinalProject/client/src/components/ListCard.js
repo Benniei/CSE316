@@ -114,6 +114,10 @@ function ListCard(props) {
     let cardElement = null;
     let publishedClass = "list-published"
     let unpublishedClass = "list-notpublished"
+
+    let leftSide = "expanded-list-left";
+    let rightSide = "expanded-list-right";
+
     if(idNamePair.published || idNamePair.community){
         cardElement = <ListItem
             id={idNamePair._id}
@@ -213,7 +217,26 @@ function ListCard(props) {
                 </Grid>
                 {
                     expand?
-                    <Grid item xs={12}>
+                    <Grid item xs={5} sx={{height: 300, ml:2}} className={leftSide}>
+                        <Stack 
+                            direction="column"
+                            spacing={2}
+                            sx={{pt: 2, pl: 3}}
+                            >
+                            <Typography>1. {idNamePair.items[0]}</Typography>
+                            <Typography>2. {idNamePair.items[1]}</Typography>
+                            <Typography>3. {idNamePair.items[2]}</Typography>
+                            <Typography>4. {idNamePair.items[3]}</Typography>
+                            <Typography>5. {idNamePair.items[4]}</Typography>
+                        </Stack>
+                        
+                    </Grid>
+                    :
+                    null
+                }
+                {
+                    expand?
+                    <Grid item xs={5.5} sx={{height: 300, ml:1}} className={rightSide}>
                         <Typography>Exapandeders</Typography>
                     </Grid>
                     :
@@ -304,37 +327,38 @@ function ListCard(props) {
                         </Typography>
                     </Box> 
                 </Grid>
-                <Grid item xs={1} style={{padding: 0, paddingTop: 0}}>
-                    {expand?
-                        <IconButton 
-                            onClick={(event) => {
-                                handleUp();
-                            }} 
-                            aria-label='down'
-                            sx={{pt:0}}
-                            >
-                                <ArrowDropUpOutlinedIcon style={{fontSize:'30pt'}} />
-                        </IconButton>
-                        :
-                        <IconButton 
-                            onClick={(event) => {
-                                setExpand(true);
-                            }} 
-                            aria-label='up'
-                            sx={{pt:0}}
-                            >
-                                <ArrowDropDownOutlinedIcon style={{fontSize:'30pt'}} />
-                        </IconButton>
-                    }
-                </Grid>
-            
             </Grid>
         </ListItem>
     }
-
     return (
         cardElement
     );
 }
 
 export default ListCard;
+
+/*
+<Grid item xs={1} style={{padding: 0, paddingTop: 0}}>
+    {expand?
+        <IconButton 
+            onClick={(event) => {
+                handleUp();
+            }} 
+            aria-label='down'
+            sx={{pt:0}}
+            >
+                <ArrowDropUpOutlinedIcon style={{fontSize:'30pt'}} />
+        </IconButton>
+        :
+        <IconButton 
+            onClick={(event) => {
+                setExpand(true);
+            }} 
+            aria-label='up'
+            sx={{pt:0}}
+            >
+                <ArrowDropDownOutlinedIcon style={{fontSize:'30pt'}} />
+        </IconButton>
+    }
+</Grid>
+*/
