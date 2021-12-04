@@ -1,3 +1,4 @@
+import { getBottomNavigationUtilityClass } from '@mui/material';
 import { createContext, useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import api from '../api'
@@ -343,16 +344,20 @@ function GlobalStoreContextProvider(props) {
         let sort = 0;
         if(query.search && query.searchText !== 1 && query.search !== ""){
             searchText = query.search;
-            sort = store.sortState
+            sort = store.sortState;
         }
         else if(query.homeState === 2){
-            searchText = "All";
+            searchText = null;
         }
         else if(query.homeState === 3){
-            searchText = "User's";
+            searchText = null;
         }
         else if(query.homeState === 4){
-            searchText = "Community"
+            searchText = null;
+        }
+
+        if(query.sortBy){
+            sort = store.sortState;
         }
 
         if (response.data.success) {
@@ -436,6 +441,9 @@ function GlobalStoreContextProvider(props) {
             if(store.search){
                 payload2.search = store.search;
             } 
+            if(store.sortState > 0){
+                payload2.sortBy = store.sortState;
+            }
             store.loadIdNamePairs(payload2)
         }
     } 

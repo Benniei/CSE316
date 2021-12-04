@@ -14,6 +14,13 @@ function Statusbar() {
         store.createNewList();
     }
 
+    const listType = [
+        'Your',
+        'All',
+        'User\'s',
+        'Community'
+      ]
+
     return (
         auth.loggedIn?
             (store.homeState === 1)?
@@ -30,7 +37,7 @@ function Statusbar() {
             :
                 <div id="top5-statusbar">
                     {(store.homeState !== 0)?
-                        <Typography variant="h2">{store.search} Lists</Typography>
+                        <Typography variant="h2">{store.search? store.search:listType[store.homeState - 1]} Lists</Typography>
                     :
                         null
                     }

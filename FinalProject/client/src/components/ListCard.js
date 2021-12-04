@@ -55,6 +55,20 @@ function ListCard(props) {
         store.userResponse(idNamePair._id, payload);
     }
 
+    function handleUnlike() {
+        let payload = {
+            unlike: auth.user.loginName
+        }
+        store.userResponse(idNamePair._id, payload);
+    }
+
+    function handleUndislike(){
+        let payload = {
+            undislike: auth.user.loginName
+        }
+        store.userResponse(idNamePair._id, payload);
+    }
+
     function handleDown(){
         setExpand(true);
         let payload = {
@@ -138,7 +152,10 @@ function ListCard(props) {
                         {
                             thumbsUp?
                             <IconButton 
-                                disabled={true}
+                                onClick={(event) => {
+                                    handleUnlike();
+                                }} 
+                                disabled={auth.guest}
                                 aria-label='like'
                                 sx={{pt:0}}
                                 style={{color:"#4da82f"}}>
@@ -159,7 +176,10 @@ function ListCard(props) {
                         {
                             thumbsDown?
                             <IconButton 
-                                disabled={true}
+                                onClick={(event) => {
+                                    handleUndislike();
+                                }} 
+                                disabled={auth.guest}
                                 aria-label='dislike'
                                 sx={{pt:0}}
                                 style={{color:"#df2937"}}>

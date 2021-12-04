@@ -52,7 +52,6 @@ updateTop5List = async (req, res) => {
                 message: 'Top 5 List not found!',
             })
         }
-        console.log(body);
         // TODO update the views using here
         // Normal list update
         if(body._id){
@@ -94,6 +93,16 @@ updateTop5List = async (req, res) => {
                 if(body.comments.length > 0) {
                     top5List.comments.push(body.comments)
                 }
+            }
+            else if(body.unlike){
+                var index = top5List.likes.indexOf(body.unlike);
+                if(index !== -1)
+                    top5List.likes.splice(index, 1);
+            }
+            else if(body.undislike){
+                var index = top5List.dislikes.indexOf(body.undislike);
+                if(index !== -1)
+                    top5List.dislikes.splice(index, 1);
             }
         }
 
