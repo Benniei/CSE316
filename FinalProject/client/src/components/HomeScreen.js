@@ -33,9 +33,6 @@ const HomeScreen = () => {
 
     
     let listCard = "";
-    let bool = 0;
-    if(store.currentList)
-        bool = store.currentList._id;
     if (store.idNamePairs) {
         listCard = 
             <List sx={{ width: '90%', left: '5%'}}>
@@ -44,7 +41,6 @@ const HomeScreen = () => {
                     <ListCard
                         key={pair._id}
                         idNamePair={pair}
-                        expand={pair._id === bool}
                         selected={false}
                     />
                 ))

@@ -14,6 +14,7 @@ import ArrowDropUpOutlinedIcon from '@mui/icons-material/ArrowDropUpOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import { Typography } from '@mui/material';
 import AuthContext from '../auth'
+import List from '@mui/material/List';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -27,7 +28,7 @@ function ListCard(props) {
     const { auth } = useContext(AuthContext);
     const { idNamePair} = props;
     const [text, setText] = useState(""); // comment text
-    let expand = props.expand;
+    let expand = false;
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
@@ -220,22 +221,44 @@ function ListCard(props) {
                 </Grid>
                 {
                     expand?
-                    <Grid item xs={5.5} sx={{height: 300, ml:2}} className={leftSide}>
+                    <Grid item xs={5.5} sx={{height: 325, ml:2}} className={leftSide}
+                        style={{backgroundColor: "#2b3172"}}>
                         <Stack 
                             direction="column"
-                            spacing={2}
-                            sx={{pt: 2, pl: 3}}
+                            spacing={1}
+                            sx={{pl: 1}}
                             >
+                            {
+                                store.currentList.items.map((pair, index) => (
+                                    <Stack direction="column" spacing={0}>
+                                        <Typography 
+                                            style={{fontSize:"23pt", color:"#daad22"}}
+                                            sx={{m: 0, p: 0}}
+                                            >
+                                            {index + 1}. {pair}
+                                        </Typography>
+                                        {store.currentList.community?
+                                            <Typography
+                                                sx={{mt: -2, ml: 4}}
+                                                style={{color:"#daad22", fontSize:"10pt", fontStyle: 'italic'}}>
+                                                ({store.currentList.itemSort[index].score} votes)
+                                            </Typography>
+                                            :
+                                            null
+                                        }
+                                    </Stack>
+                                ))
+                            }
                         </Stack>
-                        
                     </Grid>
                     :
                     null
                 }
+
                 {
                     expand?
                     <Grid item xs={5.5} sx={{height: 300, ml:1}} className={rightSide}>
-                        <Typography>Exapandeders</Typography>
+                        
                     </Grid>
                     :
                     null
