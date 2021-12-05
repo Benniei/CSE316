@@ -244,6 +244,21 @@ function GlobalStoreContextProvider(props) {
                     sortState: store.sortState
                 })
             }
+            case GlobalStoreActionType.EXPAND_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    heh: false,
+                    publish: store.publish,
+                    homeState: store.homeState,
+                    search: store.search,
+                    sortState: store.sortState
+                });
+            }
             default:
                 return store;
         }
@@ -539,6 +554,16 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.expandCurrentList = async function (id){
+        let response = await api.getTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.top5List;
+            storeReducer({
+                type: GlobalStoreActionType.EXPAND_LIST,
+                payload: top5List
+            });
+        }
+    }
     // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
     // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,

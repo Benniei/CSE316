@@ -19,15 +19,13 @@ function Top5Item(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            if(text)
-                store.updateItem(index, text.trim());
+            store.updateItem(index, text.trim());
             toggleEdit();
         }
     }
 
     function handleonBlur(){
-        if(text)
-            store.updateItem(index, text.trim());
+        store.updateItem(index, text.trim());
         toggleEdit();
     }
 

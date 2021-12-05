@@ -377,6 +377,40 @@ function ListCard(props) {
                         </IconButton>
                     </Stack>
                 </Grid>
+                {expand?
+                        <Grid item xs={11.5} sx={{height: 325, ml:2}} className={leftSide}
+                        style={{backgroundColor: "#2b3172"}}>
+                            <Stack 
+                                direction="column"
+                                spacing={1}
+                                sx={{pl: 1}}
+                                >
+                                {
+                                    store.currentList.items.map((pair, index) => (
+                                        <Stack direction="column" spacing={0}>
+                                            <Typography 
+                                                style={{fontSize:"23pt", color:"#daad22"}}
+                                                sx={{m: 0, p: 0}}
+                                                >
+                                                {index + 1}. {pair}
+                                            </Typography>
+                                            {store.currentList.community?
+                                                <Typography
+                                                    sx={{mt: -2, ml: 4}}
+                                                    style={{color:"#daad22", fontSize:"10pt", fontStyle: 'italic'}}>
+                                                    ({store.currentList.itemSort[index].score} votes)
+                                                </Typography>
+                                                :
+                                                null
+                                            }
+                                        </Stack>
+                                    ))
+                                }
+                            </Stack>
+                        </Grid>
+                        :
+                        null
+                    }
                 <Grid item xs={11} sx={{pt:0}}>
                     <Box 
                         sx={{ pl: 1, pt: 0, flexGrow: 1}} 
@@ -390,6 +424,29 @@ function ListCard(props) {
                             Edit
                         </Typography>
                     </Box> 
+                </Grid>
+                <Grid item xs={1} style={{padding: 0, paddingTop: 0}}>
+                    {expand?
+                        <IconButton 
+                            onClick={(event) => {
+                                handleUp();
+                            }} 
+                            aria-label='down'
+                            sx={{pt:0}}
+                            >
+                                <ArrowDropUpOutlinedIcon style={{fontSize:'30pt'}} />
+                        </IconButton>
+                        :
+                        <IconButton 
+                            onClick={(event) => {
+                                store.expandCurrentList(idNamePair._id);
+                            }}
+                            aria-label='up'
+                            sx={{pt:0}}
+                            >
+                                <ArrowDropDownOutlinedIcon style={{fontSize:'30pt'}} />
+                        </IconButton>
+                    }
                 </Grid>
             </Grid>
         </ListItem>
