@@ -71,7 +71,6 @@ export default function SearchBanner(){
     const handleSearch = (event) => {
         event.preventDefault();
         let payload = {
-            loginName: auth.user.loginName,
             homeState: currentState,
             search: text.trim()
         };

@@ -51,12 +51,18 @@ function ListCard(props) {
         let payload = {
             likes: auth.user.loginName
         }
+        if(store.currentList){
+            payload.expand = idNamePair._id
+        }
         store.userResponse(idNamePair._id, payload);
     }
 
     function handleDislike(){
         let payload = {
             dislikes: auth.user.loginName
+        }
+        if(store.currentList){
+            payload.expand = idNamePair._id
         }
         store.userResponse(idNamePair._id, payload);
     }
@@ -65,12 +71,18 @@ function ListCard(props) {
         let payload = {
             unlike: auth.user.loginName
         }
+        if(store.currentList){
+            payload.expand = idNamePair._id
+        }
         store.userResponse(idNamePair._id, payload);
     }
 
     function handleUndislike(){
         let payload = {
             undislike: auth.user.loginName
+        }
+        if(store.currentList){
+            payload.expand = idNamePair._id
         }
         store.userResponse(idNamePair._id, payload);
     }
@@ -91,6 +103,9 @@ function ListCard(props) {
     }
 
     function handleComment(){
+        if(text === ""){
+            return;
+        }
         let payload ={
             comments: {
                 user: auth.user.loginName,
@@ -101,6 +116,10 @@ function ListCard(props) {
         setText("");
         store.userResponse(idNamePair._id, payload);
     }
+
+    function capital(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
 
     let d = new Date(idNamePair.publishedDate);
     const months = [
@@ -154,9 +173,9 @@ function ListCard(props) {
                             direction="column"
                             >
                                 <Box sx={{ p: 1, flexGrow: 1, pt: 0, pb: 0 }} style={{fontSize: 23, fontWeight:650}}>{idNamePair.name}</Box>
-                                <Box sx={{ pl: 1, flexGrow: 1, pt:1}} >By: 
-                                    <Typography display="inline" style={{color:"#0c2bff"}}> {idNamePair.loginName}</Typography>
-                                </Box>
+                                    <Box sx={{ pl: 1, flexGrow: 1, pt:1}} >By: 
+                                        <Typography display="inline" style={{color:"#0c2bff"}}> {idNamePair.loginName}</Typography>
+                                    </Box>
                         </Stack>
                     </Grid>
                     :
@@ -164,10 +183,13 @@ function ListCard(props) {
                         <Stack 
                             direction="column"
                             >
-                                <Box sx={{ p: 1, flexGrow: 1, pt: 0, pb: 0 }} style={{fontSize: 23, fontWeight:650}}>{idNamePair.name}</Box>
+                                <Box sx={{ p: 1, flexGrow: 1, pt: 0, pb: 0 }} style={{fontSize: 23, fontWeight:650}}>{capital(idNamePair.name)}</Box>
+                                {(!idNamePair.community) ?
                                 <Box sx={{ pl: 1, flexGrow: 1, pt:1}} >By: 
                                     <Typography display="inline" style={{color:"#0c2bff"}}> {idNamePair.loginName}</Typography>
                                 </Box>
+                                :null
+                                }
                         </Stack>
                     </Grid>
                 }
@@ -247,12 +269,22 @@ function ListCard(props) {
                             {
                                 store.currentList.items.map((pair, index) => (
                                     <Stack direction="column" spacing={0}>
-                                        <Typography 
-                                            style={{fontSize:"23pt", color:"#daad22"}}
-                                            sx={{m: 0, p: 0}}
-                                            >
-                                            {index + 1}. {pair}
-                                        </Typography>
+                                        {
+                                            !store.currentList.community?
+                                            <Typography 
+                                                style={{fontSize:"23pt", color:"#daad22"}}
+                                                sx={{m: 0, p: 0}}
+                                                >
+                                                {index + 1}. {pair}
+                                            </Typography>
+                                            :
+                                            <Typography 
+                                                style={{fontSize:"23pt", color:"#daad22"}}
+                                                sx={{m: 0, p: 0}}
+                                                >
+                                                {index + 1}. {capital(pair)}
+                                            </Typography>
+                                        }
                                         {store.currentList.community?
                                             <Typography
                                                 sx={{mt: -2, ml: 4}}
@@ -286,6 +318,7 @@ function ListCard(props) {
                                 ))
                             }
                         </List>
+                    {(!auth.guest)?
                         <TextField   
                                 id="comment"
                                 label="Comment"
@@ -302,13 +335,31 @@ function ListCard(props) {
                                     }
                                 }}
                             />
+                        :
+                        <TextField   
+                                id="comment"
+                                label="Please Log In to Comment"
+                                name="comment"
+                                autoComplete="Comment"
+                                size="small"
+                                fullWidth
+                                onChange={handleUpdateText}
+                                value={text}
+                                sx={{backgroundColor:"#BEBEBE"}}
+                                disabled
+                            />
+                    }
                     </Grid>
                     :
                     null
                 }
                 <Grid item xs={8.8} sx={{pt:0}}>
                     <Box sx={{ pl: 1, pt: 0, flexGrow: 1}} >
-                        <Typography display="inline" style={{fontSize:14, fontWeight:550}}>Published:</Typography>
+                        {!idNamePair.community?
+                            <Typography display="inline" style={{fontSize:14, fontWeight:550}}>Published:</Typography>
+                            :
+                            <Typography display="inline" style={{fontSize:14, fontWeight:550}}>Updated:</Typography>
+                        }
                         <Typography display="inline" style={{color:"#5eb65c", fontSize:14}}> {date.toString()}</Typography>
                     </Box>
                     
@@ -457,29 +508,3 @@ function ListCard(props) {
 }
 
 export default ListCard;
-
-/*
-<Grid item xs={1} style={{padding: 0, paddingTop: 0}}>
-    {expand?
-        <IconButton 
-            onClick={(event) => {
-                handleUp();
-            }} 
-            aria-label='down'
-            sx={{pt:0}}
-            >
-                <ArrowDropUpOutlinedIcon style={{fontSize:'30pt'}} />
-        </IconButton>
-        :
-        <IconButton 
-            onClick={(event) => {
-                setExpand(true);
-            }} 
-            aria-label='up'
-            sx={{pt:0}}
-            >
-                <ArrowDropDownOutlinedIcon style={{fontSize:'30pt'}} />
-        </IconButton>
-    }
-</Grid>
-*/
